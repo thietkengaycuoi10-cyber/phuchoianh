@@ -285,8 +285,21 @@
             border: 1px solid rgba(255,255,255,0.1);
             background-size: cover; background-position: center;
             cursor: pointer; transition: transform 0.1s;
+            position: relative;
         }
-        .history-item:hover { transform: scale(1.1); border-color: #0A84FF; }
+        .history-item:hover { transform: scale(1.1); border-color: #0A84FF; z-index: 10; }
+        .history-dl-btn {
+            position: absolute; bottom: -2px; right: -2px;
+            width: 16px; height: 16px;
+            background: #0A84FF; border-radius: 50%;
+            display: flex; items-center; justify-center;
+            color: white; font-size: 9px;
+            border: 1px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+            opacity: 0.8;
+        }
+        .history-item:hover .history-dl-btn { transform: scale(1.2); opacity: 1; }
 
         /* --- NEW UPGRADED CSS FOR LOADING & PLACEHOLDER --- */
         
@@ -1261,14 +1274,15 @@
 
                 <div class="flex gap-4">
                     <!-- QR Image (Left) - ENLARGED -->
-                    <div class="relative group flex-shrink-0">
-                        <div class="p-1 bg-white rounded-xl shadow-lg shadow-black/50">
+                    <div class="relative group flex-shrink-0 flex flex-col items-center">
+                        <div class="p-1 bg-white rounded-xl shadow-lg shadow-black/50 mb-2">
                             <img id="vietqr-image" src="" alt="QR" class="w-32 h-32 object-contain rounded-lg">
                         </div>
-                        <!-- Scanning line effect -->
-                        <div class="absolute inset-0 pointer-events-none rounded-xl overflow-hidden">
-                            <div class="w-full h-[2px] bg-red-500/80 shadow-[0_0_10px_red] animate-scan-fast absolute top-0"></div>
-                        </div>
+                        <!-- Download QR Button (NEW) -->
+                        <button id="btn-download-qr" class="text-[9px] font-bold text-[#0A84FF] hover:text-white bg-white/10 hover:bg-[#0A84FF] px-2 py-1 rounded transition-colors flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            LƯU ẢNH QR
+                        </button>
                     </div>
 
                     <!-- Info (Right) - COMPACT -->
@@ -1472,13 +1486,30 @@
                     container.innerHTML = '';
                     this.history.forEach(src => {
                         const d = document.createElement('div');
-                        d.className = 'history-item flex-shrink-0';
+                        d.className = 'history-item flex-shrink-0 relative group';
                         d.style.backgroundImage = `url(${src})`;
                         d.onclick = () => {
                              const imgModified = document.getElementById('img-modified');
                              imgModified.src = src;
                              showToast("Đã tải lại từ lịch sử", "success");
                         };
+                        
+                        // NEW: Download button overlay
+                        const dlBtn = document.createElement('div');
+                        dlBtn.className = 'history-dl-btn';
+                        dlBtn.innerHTML = '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12l7 7 7-7"/></svg>';
+                        dlBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            const link = document.createElement('a');
+                            link.href = src;
+                            link.download = `History-Image-${Date.now()}.jpg`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            showToast("Đã lưu ảnh về máy!", "success");
+                        };
+                        
+                        d.appendChild(dlBtn);
                         container.appendChild(d);
                     });
                 },
@@ -1540,6 +1571,7 @@
                 const pkgCards = document.querySelectorAll('.recharge-pkg-card');
                 const qrImage = document.getElementById('vietqr-image');
                 const contentDisplay = document.getElementById('qr-content-display');
+                const btnDownloadQr = document.getElementById('btn-download-qr'); // NEW
 
                 if(!qrImage) return;
 
@@ -1554,6 +1586,21 @@
                     qrImage.src = url;
                     if(contentDisplay) contentDisplay.textContent = content;
                 };
+                
+                // NEW: Download QR Logic
+                if (btnDownloadQr) {
+                    btnDownloadQr.onclick = () => {
+                        if (qrImage.src) {
+                            const link = document.createElement('a');
+                            link.href = qrImage.src;
+                            link.download = `QR-Nap-Tien-${Date.now()}.png`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            showToast("Đã lưu QR về máy!", "success");
+                        }
+                    };
+                }
 
                 updateQR(100000);
 
@@ -2089,7 +2136,106 @@
 
                         const setChecked = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
                         const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+                        const openModule = (id) => { const el = document.getElementById(id); if(el) el.classList.add('open'); };
 
+                        // --- 1. PHÂN TÍCH CHÁY SÁNG (EXPOSURE) ---
+                        if (result.lightingCondition === 'overexposed' || result.lightingCondition === 'harsh_sun' || result.isHarshLight) {
+                            setChecked('check-qwen-exposure', true);
+                            setChecked('check-remove-shadow', true);
+                            
+                            // Tự động kéo thanh trượt xử lý mạnh hơn nếu quá cháy
+                            let expVal = 1.0;
+                            if (result.lightingCondition === 'overexposed') expVal = 1.5;
+                            else if (result.lightingCondition === 'harsh_sun') expVal = 1.2;
+                            
+                            setVal('exposure-slider', expVal);
+                            const eVal = document.getElementById('exposure-val');
+                            if(eVal) eVal.textContent = expVal;
+
+                            openModule('content-exposure');
+                            autoReport.push("AUTO: XỬ LÝ CHÁY SÁNG (QWEN)");
+                        }
+
+                        // --- 2. KHUYẾT ĐIỂM KHUÔN MẶT (IDENTITY) ---
+                        let identityFound = false;
+                        if(result.hasStrabismus) { setChecked('check-cross-eyed', true); identityFound = true; autoReport.push("KHÓA NÉT: MẮT LÉ"); }
+                        if(result.hasDroopyEyelids) { setChecked('check-ptosis', true); identityFound = true; autoReport.push("KHÓA NÉT: MẮT SỤP MÍ"); }
+                        if(result.hasClosedEyes) { setChecked('check-closed-eyes', true); identityFound = true; autoReport.push("KHÓA NÉT: MẮT NHẮM"); }
+                        if(result.hasMonolids) { setChecked('check-monolid', true); identityFound = true; autoReport.push("KHÓA NÉT: MẮT MỘT MÍ"); }
+                        if(result.hasBuckTeeth) { setChecked('check-buck-teeth', true); identityFound = true; autoReport.push("KHÓA NÉT: RĂNG HÔ"); }
+                        if(result.hasBlackenedTeeth) { setChecked('check-black-teeth', true); identityFound = true; autoReport.push("KHÓA NÉT: RĂNG ĐEN"); }
+                        
+                        if(identityFound) openModule('content-identity');
+
+                        // --- 3. VẬT LIỆU & BỀ MẶT (MATERIAL) ---
+                        let materialFound = false;
+                        if(result.fabricType === 'silk' || result.sceneContext === 'wedding' || (result.sceneContext === 'ancient_portrait' && result.gender === 'female')) {
+                            setChecked('check-silk-texture', true);
+                            materialFound = true;
+                            autoReport.push("AUTO: CHẤT LIỆU LỤA");
+                        } 
+                        if (result.fabricType === 'kaki' || result.isMilitary) {
+                            setChecked('check-kaki-texture', true);
+                            materialFound = true;
+                            autoReport.push("AUTO: CHẤT LIỆU KAKI");
+                        }
+                        if(result.needsMicroTexture || result.faceSize === 'portrait_closeup') {
+                            setChecked('check-micro-skin', true);
+                            materialFound = true;
+                            autoReport.push("AUTO: MICRO SKIN");
+                        }
+                        
+                        if(materialFound) openModule('content-material');
+
+                        // --- 4. XỬ LÝ HÌNH ẢNH (PROCESSING) ---
+                        if (result.isLowContrast) { setChecked('check-contrast-fix', true); autoReport.push("AUTO: FIX TƯƠNG PHẢN"); }
+                        if (result.isDullColor) { setChecked('check-vibrant', true); autoReport.push("AUTO: LZP COLOR"); }
+                        if (result.isUnevenSkin) { setChecked('check-uniform-skin', true); autoReport.push("AUTO: ĐỀU MÀU DA"); }
+                        
+                        // --- 5. CHỌN QUY TRÌNH (WORKFLOW) ---
+                        const workflowSelect = document.getElementById('kontext-workflow');
+                        const moduleContainer = document.getElementById('kontext-module-container');
+                        if (workflowSelect) {
+                            let newWorkflow = 'default';
+                            let toastMsg = "";
+
+                            if (result.sceneContext === 'wedding') { newWorkflow = 'wedding_kontext_v2'; toastMsg = "WORKFLOW: ẢNH CƯỚI"; }
+                            else if (result.sceneContext === 'ancient_portrait') { newWorkflow = 'ancient_restore'; toastMsg = "WORKFLOW: TRANH/TƯỢNG"; }
+                            else if (result.sceneContext === 'outdoor' || result.isNature) { newWorkflow = 'outdoor_mode'; toastMsg = "WORKFLOW: NGOẠI CẢNH"; }
+                            else if (result.sceneContext === 'product') { newWorkflow = 'product_mode'; toastMsg = "WORKFLOW: SẢN PHẨM"; }
+                            else if (result.isIDPhoto) { newWorkflow = 'qwen_edit_pro'; toastMsg = "WORKFLOW: ẢNH THẺ"; }
+                            else if (result.isOldPhoto) { newWorkflow = 'old_photo_v1'; toastMsg = "WORKFLOW: ẢNH CŨ"; }
+                            
+                            if (newWorkflow !== 'default') {
+                                workflowSelect.value = newWorkflow;
+                                autoReport.push(toastMsg);
+                                if(moduleContainer) {
+                                    moduleContainer.classList.add('ring-1', 'ring-[#0A84FF]');
+                                    setTimeout(() => { moduleContainer.classList.remove('ring-1', 'ring-[#0A84FF]'); }, 3000);
+                                }
+                            }
+                        }
+
+                        // --- 6. QUÂN SỬ & KỶ VẬT (MILITARY) ---
+                        if(result.isMilitary) { 
+                            openModule('content-military');
+                            autoReport.push("PHÁT HIỆN: QUÂN PHỤC");
+                            setChecked('check-insignia-boost', true);
+                            setChecked('check-metal-shader', true);
+                            setChecked('check-fabric-detail', true);
+
+                            if(result.militaryUniformType === 'public_security') document.getElementById('mil-branch').value = "vietnamese public security, green uniform, red collar tabs";
+                            else if (result.militaryUniformType === 'navy') document.getElementById('mil-branch').value = "vietnamese navy, navy blue uniform, white striped collar";
+                            else if (result.militaryUniformType === 'army_ground') document.getElementById('mil-branch').value = "vietnamese army ground force, red collar tabs";
+
+                            if(result.hasGoldStarMedal) setChecked('check-sao-vang', true);
+                            if(result.hasResistanceMedal) setChecked('check-khang-chien', true);
+                            if(result.hasYouthBadge) setChecked('check-doan', true);
+                            
+                            if (!result.hasRankInsignia) setChecked('block-rank', true);
+                        }
+
+                        // --- BASIC SETTINGS ---
                         if(document.getElementById('gender-select')) {
                             const genderVal = result.gender === 'male' ? 'male' : (result.gender === 'female' ? 'female' : '');
                             document.getElementById('gender-select').value = genderVal;
@@ -2097,313 +2243,43 @@
                         }
                         if(document.getElementById('age-input')) {
                             document.getElementById('age-input').value = result.age || 30;
-                            autoReport.push(`PHÁT HIỆN: ĐỘ TUỔI ${result.age || 30}`);
-                        }
-                        if(result.isIDPhoto) { 
-                            setChecked('check-id-photo', true); 
-                            const moduleSubject = document.getElementById('module-subject');
-                            if(moduleSubject) moduleSubject.classList.add('open'); 
-                            autoReport.push("CHẾ ĐỘ: ẢNH THẺ");
                         }
                         
                         if(result.isAltarPortrait) {
                             setChecked('check-altar-mode', true);
-                            const moduleSubject = document.getElementById('module-subject');
-                            if(moduleSubject) moduleSubject.classList.add('open');
+                            openModule('content-subject');
                             autoReport.push("PHÁT HIỆN: ẢNH THỜ");
-                        }
-                        
-                        if(result.isMilitary) { 
-                            const contentMilitary = document.getElementById('content-military');
-                            if(contentMilitary) contentMilitary.classList.add('open'); 
-                            autoReport.push("PHÁT HIỆN: QUÂN PHỤC");
-                            setChecked('check-insignia-boost', true);
-                            
-                            setChecked('check-metal-shader', true);
-                            setChecked('check-fabric-detail', true);
-                            autoReport.push("AUTO: PRO METAL/FABRIC");
-
-                            if(result.militaryUniformType === 'public_security') {
-                                document.getElementById('mil-branch').value = "vietnamese public security, green uniform, red collar tabs";
-                                autoReport.push("AUTO: CÔNG AN");
-                            } else if (result.militaryUniformType === 'navy') {
-                                document.getElementById('mil-branch').value = "vietnamese navy, navy blue uniform, white striped collar";
-                                autoReport.push("AUTO: HẢI QUÂN");
-                            } else if (result.militaryUniformType === 'army_ground') {
-                                document.getElementById('mil-branch').value = "vietnamese army ground force, red collar tabs";
-                                autoReport.push("AUTO: LỤC QUÂN");
-                            }
-
-                            if(result.militaryHatType === 'pith_helmet') {
-                                document.getElementById('hat-select').value = "wear vietnamese pith helmet, hard pith helmet, dark green color, rounded shape, red badge with yellow star";
-                                autoReport.push("AUTO: MŨ CỐI");
-                            } else if (result.militaryHatType === 'soft_cap') {
-                                document.getElementById('hat-select').value = "wear vietnamese soft cap, boonie hat, green fabric, red star badge";
-                                autoReport.push("AUTO: MŨ TAI BÈO");
-                            } else if (result.militaryHatType === 'kepi_police') {
-                                document.getElementById('hat-select').value = "wear vietnamese police kepi hat, green color, red band, gold badge";
-                                autoReport.push("AUTO: MŨ KEPI CA");
-                            } else if (result.militaryHatType === 'kepi_officer') {
-                                document.getElementById('hat-select').value = "wear vietnamese officer kepi hat, mixed red and green color, gold chin strap, red badge with gold star";
-                                autoReport.push("AUTO: MŨ KEPI SQ");
-                            }
-
-                            if(result.hasGoldStarMedal) { setChecked('check-sao-vang', true); autoReport.push("AUTO: SAO VÀNG"); }
-                            if(result.hasResistanceMedal) { setChecked('check-khang-chien', true); autoReport.push("AUTO: HC KHÁNG CHIẾN"); }
-                            if(result.hasYouthBadge) { setChecked('check-doan', true); autoReport.push("AUTO: HUY HIỆU ĐOÀN"); }
-                            
-                            if (!result.hasRankInsignia) {
-                                setChecked('block-rank', true);
-                                autoReport.push("AUTO: CHẶN VẼ QUÂN HÀM");
-                            }
                         }
 
                         if(result.isGroupPhoto) {
                             setChecked('check-group-mode', true);
+                            openModule('content-processing');
                             autoReport.push("CHẾ ĐỘ: ẢNH ĐÁM ĐÔNG");
                         }
 
-                        let identityFeaturesFound = false;
-                        if(result.hasStrabismus) { setChecked('check-cross-eyed', true); identityFeaturesFound = true; autoReport.push("KHÓA NÉT: MẮT LÉ"); }
-                        if(result.hasDroopyEyelids) { setChecked('check-ptosis', true); identityFeaturesFound = true; autoReport.push("KHÓA NÉT: MẮT SỤP MÍ"); }
-                        if(result.hasClosedEyes) { setChecked('check-closed-eyes', true); identityFeaturesFound = true; autoReport.push("KHÓA NÉT: MẮT NHẮM"); }
-                        if(result.hasMonolids) { setChecked('check-monolid', true); identityFeaturesFound = true; autoReport.push("KHÓA NÉT: MẮT MỘT MÍ"); }
-                        if(result.hasBuckTeeth) { setChecked('check-buck-teeth', true); identityFeaturesFound = true; autoReport.push("KHÓA NÉT: RĂNG HÔ"); }
-                        if(result.hasBlackenedTeeth) { setChecked('check-black-teeth', true); identityFeaturesFound = true; autoReport.push("KHÓA NÉT: RĂNG ĐEN"); }
-
-                        if(identityFeaturesFound) {
-                            const contentIdentity = document.getElementById('content-identity');
-                            if(contentIdentity) contentIdentity.classList.add('open');
-                        }
-                        
                         if (!state.isReplicaMode) { 
                             const modeReplica = document.getElementById('mode-replica');
                             if(modeReplica) modeReplica.click(); 
                             autoReport.push("KÍCH HOẠT: CHẾ ĐỘ SIÊU THỰC");
                         }
                         
+                        // --- PROMPT GENERATION (GIỮ NGUYÊN LOGIC CŨ ĐỂ TẠO PROMPT) ---
                         let smartPrompt = `Restore this ${result.sceneContext} photo. (high resolution:1.5), (masterpiece:1.4), (detailed background:1.3). `;
                         smartPrompt += "(hyper-realistic skin texture:1.6), (detailed skin pores:1.5), (rosy undertone:1.3), (natural beauty:1.2). ";
                         if(result.isMilitary) smartPrompt += ", (Vietnamese military uniform:1.5), (historic details:1.4)";
                         
-                        if(result.materialType === 'canvas') {
-                             smartPrompt += ", (remove canvas texture:1.4), (smooth surface:1.2)";
-                             autoReport.push("FIX: VÂN VẢI CANVAS");
-                        } else if (result.materialType === 'newspaper') {
-                             smartPrompt += ", (remove halftone pattern:1.3), (denoise:1.4)";
-                             autoReport.push("FIX: ẢNH BÁO CŨ");
-                        }
+                        // ... (Các phần thêm prompt cũ giữ nguyên) ...
+                        if(result.materialType === 'canvas') smartPrompt += ", (remove canvas texture:1.4), (smooth surface:1.2)";
+                        if(result.specificDamage === 'mold_spots') smartPrompt += ", (remove mold spots:1.5), (clean fungal growth:1.4)";
+                        if(!result.isBlackAndWhite && result.colorCast !== 'none') smartPrompt += `, (remove ${result.colorCast} color cast:1.4), (white balance:1.3)`;
 
-                        if(result.specificDamage === 'mold_spots') {
-                            smartPrompt += ", (remove mold spots:1.5), (clean fungal growth:1.4)";
-                            autoReport.push("AUTO CLEAN: NẤM MỐC");
-                        } else if (result.specificDamage === 'water_stain') {
-                            smartPrompt += ", (remove water stains:1.4), (fix discoloration:1.3)";
-                            autoReport.push("AUTO CLEAN: Ố NƯỚC");
-                        } else if (result.specificDamage === 'tear') {
-                            smartPrompt += ", (inpainting torn edges:1.5), (fill missing parts:1.4)";
-                            autoReport.push("AUTO FILL: VẾT RÁCH");
-                        }
-
-                        if(!result.isBlackAndWhite && result.colorCast !== 'none') {
-                            smartPrompt += `, (remove ${result.colorCast} color cast:1.4), (white balance:1.3), (natural colors)`;
-                            autoReport.push(`FIX: ÁM MÀU (${result.colorCast.toUpperCase()})`);
-                        }
-
-                        if(result.faceSize === 'portrait_closeup') {
-                            smartPrompt += ", (extremely detailed eyes:1.4), (individual eyelashes:1.3)";
-                        } else if (result.faceSize === 'group_small_faces') {
-                            smartPrompt += ", (clear facial features:1.5), (avoid distorted faces:1.4)";
-                        }
-
-                        if(result.estimatedEra === 'french_colonial' && !result.isMilitary) {
-                            smartPrompt += ", (1940s vietnamese clothing style:1.2)";
-                        } else if (result.estimatedEra === 'subsidy_period' && !result.isMilitary) {
-                             smartPrompt += ", (1980s vietnamese fashion:1.2)";
-                        }
-
-                        if (result.hairCondition === 'blurry_mess' || result.faceSize === 'portrait_closeup') {
-                            smartPrompt += ", (LZP Hair:1.4), (detailed hair strands:1.5), (remove hair blur)";
-                            setChecked('check-hair', true);
-                            autoReport.push("AUTO: VẼ LẠI TÓC (LZP)");
-                        }
-
-                        if (result.skinTexture === 'waxy' || result.fabricDetail === 'lost') {
-                            smartPrompt += ", (detailed skin pores:1.4), (realistic fabric texture:1.3), (micro details:1.3)";
-                            setChecked('check-texture-boost', true);
-                            autoReport.push("AUTO: TĂNG CHI TIẾT");
-                        }
-
-                        if (result.hasJewelry) {
-                            smartPrompt += ", (detailed jewelry:1.4), (sparkling gold/silver:1.2)";
-                            autoReport.push("AUTO: LÀM NÉT TRANG SỨC");
-                        }
-                        
-                        if (result.hasDeepScratches || result.specificDamage === 'severe_decay' || result.damageType === 'severe_damage') {
-                            setChecked('check-deep-scratch', true);
-                            autoReport.push("AUTO: XÓA XƯỚC SÂU (DEEP)");
-                            const expertMod = document.getElementById('content-expert');
-                            if(expertMod) expertMod.classList.add('open');
-                        }
-
-                        if (result.isBlurry || result.damageType === 'blur' || result.faceSize === 'group_small_faces') {
-                            setChecked('check-ultra-sharp', true);
-                            autoReport.push("AUTO: ULTRA-SHARP 8K");
-                            const expertMod = document.getElementById('content-expert');
-                            if(expertMod) expertMod.classList.add('open');
-                        }
-
-                        const denoiseSlider = document.getElementById('denoise-slider');
-                        const denoiseValDisplay = document.getElementById('denoise-val');
-                        if (denoiseSlider && result.noiseLevel) {
-                            let val = 0.5;
-                            if(result.noiseLevel === 'high') val = 0.8;
-                            else if(result.noiseLevel === 'low') val = 0.3;
-                            
-                            denoiseSlider.value = val;
-                            if(denoiseValDisplay) denoiseValDisplay.textContent = val;
-                            autoReport.push(`AUTO: DENOISE ${val}`);
-                        }
-                        
-                        if(result.fabricType === 'silk' || result.sceneContext === 'wedding' || (result.sceneContext === 'ancient_portrait' && result.gender === 'female')) {
-                            setChecked('check-silk-texture', true);
-                            autoReport.push("AUTO: CHẤT LIỆU LỤA");
-                            const matMod = document.getElementById('content-material');
-                            if(matMod) matMod.classList.add('open');
-                        } else if (result.fabricType === 'kaki' || result.isMilitary) {
-                            setChecked('check-kaki-texture', true);
-                            autoReport.push("AUTO: CHẤT LIỆU KAKI");
-                            const matMod = document.getElementById('content-material');
-                            if(matMod) matMod.classList.add('open');
-                        }
-                        
-                        if(result.needsMicroTexture || result.faceSize === 'portrait_closeup') {
-                            setChecked('check-micro-skin', true);
-                            autoReport.push("AUTO: MICRO SKIN");
-                        }
-                        
-                        if (result.isLowContrast) { setChecked('check-contrast-fix', true); autoReport.push("AUTO: FIX TƯƠNG PHẢN"); }
-                        if (result.isDullColor) { setChecked('check-vibrant', true); autoReport.push("AUTO: LZP COLOR"); }
-                        if (result.isUnevenSkin) { setChecked('check-uniform-skin', true); autoReport.push("AUTO: ĐỀU MÀU DA"); }
-                        if (result.isVeryBlurry) { setChecked('check-blur-prepass', true); autoReport.push("AUTO: KHỬ NHIỄU SÂU"); }
-                        if (result.isSevereDamage) { setChecked('check-extreme-mode', true); autoReport.push("AUTO: EXTREME RESTORE"); }
-                        if (result.isPaintingOrStatue) { setChecked('check-dual-controlnet', true); autoReport.push("AUTO: DUAL CONTROLNET"); }
-                        
-                        if (result.hasDeadEyes || result.hasStrongExpression) {
-                            const emoMod = document.getElementById('content-emotion');
-                            if(emoMod) emoMod.classList.add('open');
-                        }
-                        
-                        if (result.hasDeadEyes) { setChecked('check-eye-glint', true); autoReport.push("AUTO: TẠO ÁNH MẮT"); }
-                        if (result.hasStrongExpression) { setChecked('check-micro-expression', true); autoReport.push("AUTO: GIỮ BIỂU CẢM"); }
-                        
-                        if (result.recommendedGrain !== undefined) {
-                            setVal('grain-slider', result.recommendedGrain);
-                            const gVal = document.getElementById('grain-val');
-                            if(gVal) gVal.textContent = result.recommendedGrain + '%';
-                        }
-
-                        if (result.recommendedExposure !== undefined) {
-                            setVal('exposure-slider', result.recommendedExposure);
-                            const eVal = document.getElementById('exposure-val');
-                            if(eVal) eVal.textContent = result.recommendedExposure;
-                        }
-
-                        if (result.isHarshLight) {
-                            setChecked('check-soft-light', true);
-                            autoReport.push("AUTO: SOFT LIGHT");
-                        }
-
-                        if (result.recommendedTextureMode) {
-                            let tVal = "";
-                            if(result.recommendedTextureMode === 'true_skin') tVal = "true skin, natural pores, film grain, realistic skin:1.2, natural beauty:1.2";
-                            else if(result.recommendedTextureMode === 'studio_skin') tVal = "Canon EOS 5D Mark IV, 85mm lens, shallow depth of field, perfect lighting, raw photo, realistic skin texture";
-                            else if(result.recommendedTextureMode === 'smooth') tVal = "smooth skin, ai beauty";
-                            else if(result.recommendedTextureMode === 'high_detail') tVal = "high detail, film grain";
-                            
-                            if(tVal) setVal('texture-mode', tVal);
-                        }
-                        
-                        if(result.sceneContext === 'outdoor' || result.sceneContext === 'nature') {
-                             setVal('event-context', 'outdoor_garden');
-                        } else if (result.sceneContext === 'studio' && result.isOldPhoto) {
-                             setVal('event-context', 'luxury_interior');
-                        }
-
-                        // AUTO EXPOSURE APPLY LOGIC UPDATED
-                        if (result.lightingCondition === 'harsh_sun' || result.lightingCondition === 'overexposed') {
-                            setChecked('check-qwen-exposure', true);
-                            setChecked('check-remove-shadow', true);
-                            autoReport.push("AUTO: XỬ LÝ CHÁY SÁNG");
-                            const exposureMod = document.getElementById('content-exposure');
-                            if(exposureMod) exposureMod.classList.add('open');
-                            // Ensure intensity is high enough
-                            if (result.recommendedExposure < 1.0) {
-                                setVal('exposure-slider', 1.5);
-                                const eVal = document.getElementById('exposure-val');
-                                if(eVal) eVal.textContent = "1.5";
-                            }
-                        }
-                        
-                        if (result.isHazy || result.backgroundType === 'complex_outdoor') {
-                            setChecked('check-dehaze', true);
-                            autoReport.push("AUTO: KHỬ SƯƠNG MÙ");
-                        }
-                        
                         const promptMain = document.getElementById('prompt-main');
                         if(promptMain) promptMain.value = smartPrompt;
                         
-                        const contentPrompt = document.getElementById('content-prompt');
-                        if(contentPrompt) contentPrompt.classList.add('open');
-                        
-                        const workflowSelect = document.getElementById('kontext-workflow');
-                        const moduleContainer = document.getElementById('kontext-module-container');
-                        const lightingSelect = document.getElementById('color-grading');
-                        const upscaleSelect = document.getElementById('upscale-mode');
-
-                        if (workflowSelect && moduleContainer) {
-                            let newWorkflow = 'qwen_edit_pro'; 
-                            let toastMsg = "QWEN EDIT PRO"; 
-
-                            if (lightingSelect) {
-                                if (result.isBlackAndWhite && result.isOldPhoto) {
-                                    lightingSelect.value = 'colorize_bw_old_photo';
-                                    autoReport.push("AUTO: TÔ MÀU ẢNH CŨ");
-                                }
-                                else if (result.lightingCondition === 'golden_hour') { lightingSelect.value = 'golden_hour_blinds'; autoReport.push("LIGHTING: GOLDEN HOUR"); } 
-                                else if (result.lightingCondition === 'moonlight') { lightingSelect.value = 'moonlight_window'; autoReport.push("LIGHTING: MOONLIGHT"); } 
-                                else if (result.lightingCondition === 'neon') { lightingSelect.value = 'neon_cyberpunk'; autoReport.push("LIGHTING: NEON"); }
-                            }
-
-                            if ((result.damageType === 'blur' || result.isHazy) && upscaleSelect) {
-                                upscaleSelect.value = 'invsr_sharp'; 
-                                autoReport.push("UPSCALE: INVSR CHỐNG RUNG");
-                            }
-
-                            if(result.sceneContext === 'wedding') { newWorkflow = 'wedding_kontext_v2'; toastMsg = "WORKFLOW: ẢNH CƯỚI"; }
-                            else if(result.sceneContext === 'ancient_portrait') { newWorkflow = 'ancient_restore'; toastMsg = "WORKFLOW: TRANH/TƯỢNG"; }
-                            else if(result.sceneContext === 'outdoor' || result.sceneContext === 'nature' || result.isNature === true || result.backgroundType === 'complex_outdoor') { 
-                                newWorkflow = 'outdoor_mode'; 
-                                toastMsg = "WORKFLOW: NGOẠI CẢNH"; 
-                            }
-                            else if (result.isIDPhoto) {
-                                if (!result.isOldPhoto && result.damageType === 'none') { newWorkflow = 'white_bg'; toastMsg = "WORKFLOW: TÁCH NỀN"; } 
-                                else { newWorkflow = 'qwen_edit_pro'; toastMsg = "WORKFLOW: PHỤC HỒI ẢNH THẺ"; }
-                            }
-                            else if(result.sceneContext === 'product' && !result.isOldPhoto) { newWorkflow = 'product_mode'; toastMsg = "WORKFLOW: SẢN PHẨM"; }
-
-                            if(newWorkflow !== 'default') {
-                                workflowSelect.value = newWorkflow;
-                                autoReport.push(toastMsg);
-                                moduleContainer.classList.add('ring-1', 'ring-[#0A84FF]');
-                                setTimeout(() => { moduleContainer.classList.remove('ring-1', 'ring-[#0A84FF]'); }, 3000);
-                            }
-                        }
+                        openModule('content-prompt');
 
                         if (window.innerWidth >= 1024) { openSidebar(); } 
-                        
                         playSequentialLog(autoReport); 
-                        
                         updateMobileBtnState('run');
                     }
                 } catch(e) { 
