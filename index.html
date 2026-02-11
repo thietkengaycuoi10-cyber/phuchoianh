@@ -1897,137 +1897,74 @@
                 const { key: keyToUse, base: apiBase, isComet } = getApiConfig();
                 try {
                     const resizedBase64 = await resizeImage(state.base64);
-                    let finalPrompt = document.getElementById('prompt-main').value;
-                    if(!finalPrompt) finalPrompt = "Restore this photo, remove scratches, high quality, 8k";
                     
+                    // --- UPGRADED BRAIN (PROMPT CONSTRUCTION) ---
+                    // Instead of appending strings, we build a structured instruction set
+                    let masterPrompt = "You are an expert professional photo restorer. Your task is to restore the provided damaged image to high-definition quality while preserving its historical authenticity and facial identity. ";
+                    
+                    // 1. User Input (Manual Prompt)
+                    let userPrompt = document.getElementById('prompt-main').value;
+                    if(!userPrompt) userPrompt = "Restore this photo, fix damage, sharpen focus, remove blur.";
+                    masterPrompt += `User Instructions: ${userPrompt}. `;
+
+                    // 2. Identity Guard (Anti-Flip / Anti-Distortion)
                     const antiFlip = document.getElementById('check-anti-flip')?.checked;
-                    if (antiFlip) {
-                        finalPrompt += ", (maintain original composition:1.5), (do not flip:1.5), (preserve composition:1.4)";
-                    }
-                    
                     const replicaMode = document.getElementById('mode-replica')?.checked;
-                    if (replicaMode) {
-                        finalPrompt += ", (exact facial features:1.5), (same face structure:1.5)";
+                    if (antiFlip || replicaMode) {
+                        masterPrompt += "STRICT CONSTRAINT: Do NOT flip the image horizontally or vertically. Maintain the exact original composition, face orientation, and aspect ratio. Preserve facial features and identity with 100% accuracy. ";
                     }
-                    finalPrompt += ", (maintain original composition:1.5), (do not flip:1.5), (do not crop:1.4), (preserve original aspect ratio:1.4)";
                     
+                    // 3. Context & Scene
                     const isAltarMode = document.getElementById('check-altar-mode')?.checked;
+                    const isIDPhoto = document.getElementById('check-id-photo')?.checked;
                     if (isAltarMode) {
-                        finalPrompt += ", (formal portrait:1.4), (symmetrical face:1.3), (solemn expression), (perfectly centered), (white background:0.5)";
+                        masterPrompt += "Context: Formal altar portrait. Ensure symmetrical features, dignified expression, and clear focus. ";
+                    } else if (isIDPhoto) {
+                        masterPrompt += "Context: Formal ID/Passport photo. Studio lighting, neutral background, sharp focus on eyes and face. ";
                     }
 
-                    const isIDPhoto = document.getElementById('check-id-photo')?.checked;
-                    if (isIDPhoto) {
-                        finalPrompt += ", (passport photo:1.5), (studio lighting:1.3), (neutral background:1.4), (look at camera), (high quality headshot)";
-                    }
-                    
+                    // 4. Asian Specifics
                     const isAsianIdentity = document.getElementById('check-asian-identity')?.checked;
                     if(isAsianIdentity) {
-                        finalPrompt += ", (vietnamese facial structure:1.6), (southeast asian features), (warm skin tone), (slight high cheekbones:1.2), (authentic vietnamese eyes shape)";
+                        masterPrompt += "Ethnic features: Authentic Vietnamese/Southeast Asian facial structure. Warm skin tone, natural dark eyes, specific nose shape. Do NOT westernize the features. ";
                     }
 
-                    const workflowSelect = document.getElementById('kontext-workflow');
-                    if (workflowSelect) {
-                        if (workflowSelect.value === 'qwen_edit_pro') {
-                            finalPrompt = "Instruction: " + finalPrompt; 
-                            finalPrompt += ". Describe key features of the input image, then explain how the user's text instruction should alter the image while maintaining consistency.";
-                        } else if (workflowSelect.value === 'qwen_lightning') {
-                             finalPrompt += ", (Qwen-Image-Edit-2511:1.2), (Lightning-4steps-V1.0-fp32:1.0)";
-                             finalPrompt += ", (Instruction: High-resolution photo reconstruction:1.5)";
-                        } else if (workflowSelect.value === 'old_photo_v1') {
-                             finalPrompt += ", (Kontext_老照片修复lora_v1.safetensors:1.0), (ReferenceLatent:1.2)";
-                        }
-                    }
-
-                    const upscaleMode = document.getElementById('upscale-mode');
-                    if (upscaleMode && upscaleMode.value === 'invsr_sharp') {
-                        finalPrompt += ", (sharp focus:1.4), (remove motion blur:1.3), (InvSR deblurring:1.2)";
-                    } else if (upscaleMode && upscaleMode.value === 'realesrgan') {
-                        finalPrompt += ", (RealESRGAN x4 Plus:1.4), (smooth restoration:1.3)";
-                    }
-
-                    const colorGrade = document.getElementById('color-grading');
-                    if (colorGrade && colorGrade.value.includes('golden_hour')) {
-                         finalPrompt += ", (Golden hour sunlight filtered through window blinds:1.3), (striped light patterns:1.2)";
-                    } else if (colorGrade && colorGrade.value.includes('moonlight')) {
-                         finalPrompt += ", (Moonlight through window panes:1.3), (bluish soft grid shadows:1.2), (mysterious night mood)";
-                    } else if (colorGrade && colorGrade.value.includes('colorize_bw_old_photo')) {
-                         finalPrompt += ", (colorize:1.5), (vibrant colors), (natural skin tones:1.4), (realistic clothes colors)";
-                    } else if (colorGrade && colorGrade.value.includes('vibrant_modern')) {
-                         finalPrompt += ", (vibrant color palette:1.3), (modern cinematic lighting:1.2), (high saturation:1.1)";
-                    }
-
-                    const isInsigniaBoost = document.getElementById('check-insignia-boost')?.checked || false;
-                    const isBlockRank = document.getElementById('block-rank')?.checked || false;
-                    const isMetalShader = document.getElementById('check-metal-shader')?.checked || false;
-                    const isFabricDetail = document.getElementById('check-fabric-detail')?.checked || false;
-
+                    // 5. Military & Historical (Logic Upgraded)
+                    const milUniform = document.getElementById('mil-uniform')?.value || "";
                     const hatVal = document.getElementById('hat-select')?.value || "";
-                    if(hatVal.includes("pith helmet")) {
-                        finalPrompt += ", (green vietnamese pith helmet:1.6), (hard shell texture:1.3), (round shape), (red circular badge with raised yellow star:1.5), (worn leather chin strap:1.2)";
-                    } else if (hatVal.includes("kepi hat")) {
-                         finalPrompt += ", (structured officer kepi hat:1.5), (stiff visor), (gold band details), (raised metal star insignia)";
-                    }
-
-                    const uniformVal = document.getElementById('mil-uniform')?.value || "";
-                    if(uniformVal.includes("to chau")) {
-                        finalPrompt += ", (to chau military uniform:1.5), (faded green fabric), (buttoned chest pockets), (loose fitting trousers), (simple collar)";
-                    } else if (uniformVal.includes("tran thu")) {
-                         finalPrompt += ", (padded cotton jacket:1.5), (diamond quilted texture:1.4), (thick warm fabric), (collarless or simple collar)";
-                    }
-
-                    if (isInsigniaBoost) finalPrompt += `, (hyper detailed military insignia:1.7), (macro photography of medals), (sharp defined star shape), (distinct collar tabs)`;
+                    const isInsigniaBoost = document.getElementById('check-insignia-boost')?.checked;
                     
-                    if (isMetalShader) {
-                         finalPrompt += ", (metallic texture rendering:1.4), (shiny gold surface:1.3), (reflective metal:1.2), (embossed 3d details), (oxidized vintage metal)";
-                    }
-                    
-                    if (isFabricDetail) {
-                         finalPrompt += ", (high thread count fabric:1.3), (visible weave texture), (natural fabric folds), (canvas material texture:1.2), (clothing seam details)";
+                    if (milUniform || hatVal) {
+                        masterPrompt += "Attire: Historical Vietnamese Military Uniform. ";
+                        if(milUniform.includes("to chau")) masterPrompt += "Material: 'To Chau' fabric (faded green cotton), loose fit, button pockets. ";
+                        if(milUniform.includes("tran thu")) masterPrompt += "Material: Padded cotton 'Tran Thu' jacket, diamond quilted texture. ";
+                        if(hatVal.includes("pith helmet")) masterPrompt += "Headgear: Green Pith Helmet (hard shell), round shape with red star badge. ";
+                        if(hatVal.includes("kepi")) masterPrompt += "Headgear: Officer Kepi hat, rigid structure, metallic insignia. ";
+                        
+                        if(isInsigniaBoost) masterPrompt += "Details: Render metallic textures for stars and badges (shiny, brass/gold material). Sharp collar tabs. ";
                     }
 
-                    if (isBlockRank) finalPrompt += `, (plain collar:1.5), (no rank insignia:1.5), (smooth collar fabric)`;
-
-                    const isQwenExposure = document.getElementById('check-qwen-exposure')?.checked || false;
-                    const exposureStrength = parseFloat(document.getElementById('exposure-slider')?.value || 1.0);
-                    if (isQwenExposure) {
-                         const isRemoveShadow = document.getElementById('check-remove-shadow')?.checked;
-                         if (isRemoveShadow) {
-                            finalPrompt += `, (remove harsh light and shadow:${(1.5 * exposureStrength).toFixed(1)}), (neutralize exposure:${(1.4 * exposureStrength).toFixed(1)})`;
-                        }
-                    }
-                    
+                    // 6. Technical Enhancements
                     const denoiseVal = parseFloat(document.getElementById('denoise-slider')?.value || 0.5);
-                    const isUltraSharp = document.getElementById('check-ultra-sharp')?.checked || false;
-                    const isDeepScratch = document.getElementById('check-deep-scratch')?.checked || false;
+                    masterPrompt += `Restoration Steps: Denoise strength ${denoiseVal}. Remove scratches, dust, and tears. `;
                     
-                    finalPrompt += `, (denoise:${denoiseVal})`;
-                    
-                    if(isUltraSharp) {
-                        finalPrompt += ", (8k resolution:1.6), (unsharp mask:0.5), (high pass filter:0.3), (extremely detailed texture:1.5)";
-                    }
-                    
-                    if(isDeepScratch) {
-                        finalPrompt += ", (inpainting huge cracks:1.6), (fill white scratches:1.5), (reconstruct missing parts), (heal damage)";
-                    }
-                    
+                    const isUltraSharp = document.getElementById('check-ultra-sharp')?.checked;
+                    if(isUltraSharp) masterPrompt += "Apply High-Pass filter logic for ultra-sharp edges. Upscale to 4K resolution. ";
+
+                    // 7. Texture & Materials (New V41 Logic)
                     const isSilk = document.getElementById('check-silk-texture')?.checked;
                     const isKaki = document.getElementById('check-kaki-texture')?.checked;
                     const isMicroSkin = document.getElementById('check-micro-skin')?.checked;
                     
-                    if(isSilk) finalPrompt += ", (realistic silk texture:1.4), (shiny fabric:1.3), (detailed embroidery), (soft drape)";
-                    if(isKaki) finalPrompt += ", (rough canvas texture:1.4), (matte fabric), (detailed weave pattern:1.3), (stiff material)";
-                    if(isMicroSkin) finalPrompt += ", (hyper realistic skin pores:1.5), (visible skin texture), (natural blemishes), (no plastic skin)";
+                    if(isSilk) masterPrompt += "Texture: Soft, shiny silk/satin fabric with natural folds. ";
+                    if(isKaki) masterPrompt += "Texture: Rough, matte canvas/kaki fabric weave. ";
+                    if(isMicroSkin) masterPrompt += "Skin: Subsurface scattering, visible skin pores, natural blemishes (avoid plastic/waxy skin). ";
 
-                    const isEyeGlint = document.getElementById('check-eye-glint')?.checked;
-                    const isMicroExp = document.getElementById('check-micro-expression')?.checked;
-                    
-                    if(isEyeGlint) finalPrompt += ", (sparkling eye catchlights:1.4), (lively eyes), (detailed iris reflection), (remove dead eyes look)";
-                    if(isMicroExp) finalPrompt += ", (preserve micro expressions:1.3), (natural smile lines), (authentic facial emotion), (avoid frozen face)";
+                    // 8. Negative Prompt (Embedded)
+                    masterPrompt += "Negative constraints: No cartoon style, no plastic skin, no blurred faces, no distorted eyes, no text artifacts, no chromatic aberration.";
 
-                    finalPrompt += ", (best quality, 8k, hyper detailed)";
-
-                    const parts = [{ text: finalPrompt }, { inlineData: { mimeType: "image/jpeg", data: resizedBase64.split(',')[1] } }];
+                    // --- SEND REQUEST ---
+                    const parts = [{ text: masterPrompt }, { inlineData: { mimeType: "image/jpeg", data: resizedBase64.split(',')[1] } }];
                     const headers = { 'Content-Type': 'application/json' }; if (isComet) headers['Authorization'] = `Bearer ${keyToUse}`;
                     const response = await fetch(`${apiBase}/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${keyToUse}`, { method: 'POST', headers: headers, body: JSON.stringify({ contents: [{ parts: parts }], generationConfig: { responseModalities: ["TEXT", "IMAGE"] } }) });
                     
@@ -2116,7 +2053,40 @@
                     const resizedBase64 = await resizeImage(state.base64);
                     const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 40000);
                     
-                    const promptText = "Analyze this image for photo restoration. Return ONLY JSON: { \"sceneContext\": \"wedding\"|\"funeral\"|\"casual\"|\"studio\"|\"outdoor\"|\"product\"|\"painting\"|\"ancient_portrait\"|\"nature\", \"materialType\": \"paper_photo\"|\"canvas\"|\"newspaper\"|\"silk\"|\"digital\", \"specificDamage\": \"scratches\"|\"mold_spots\"|\"water_stain\"|\"tear\"|\"severe_decay\"|\"none\", \"colorCast\": \"sepia\"|\"cyan\"|\"red\"|\"yellow\"|\"none\", \"estimatedEra\": \"french_colonial\"|\"vietnam_war\"|\"subsidy_period\"|\"modern\"|\"unknown\", \"faceSize\": \"portrait_closeup\"|\"medium_shot\"|\"group_small_faces\", \"lightingCondition\": \"rembrandt\"|\"golden_hour\"|\"neon\"|\"soft_diffused\"|\"flat\"|\"overexposed\"|\"harsh_sun\"|\"moonlight\"|\"streetlight\", \"backgroundType\": \"plain\"|\"complex_outdoor\"|\"complex_indoor\", \"hairCondition\": \"blurry_mess\"|\"sharp\"|\"normal\", \"skinTexture\": \"waxy\"|\"detailed\"|\"grainy\", \"fabricDetail\": \"lost\"|\"visible\", \"hasJewelry\": boolean, \"isNature\": boolean, \"isMilitary\": boolean, \"militaryUniformType\": \"army_ground\"|\"air_force\"|\"navy\"|\"border_guard\"|\"public_security\"|\"youth_volunteer\"|\"unknown\", \"militaryHatType\": \"pith_helmet\"|\"soft_cap\"|\"kepi_officer\"|\"kepi_police\"|\"bamboo_helmet\"|\"none\", \"hasGoldStarMedal\": boolean, \"hasResistanceMedal\": boolean, \"hasYouthBadge\": boolean, \"isBlackAndWhite\": boolean, \"isAltarPortrait\": boolean, \"gender\": \"male\"|\"female\", \"age\": number, \"damageType\": \"scratches\"|\"faded\"|\"sepia\"|\"severe_damage\"|\"none\"|\"blur\", \"isOldPhoto\": boolean, \"isIDPhoto\": boolean, \"isHazy\": boolean, \"hasStrabismus\": boolean, \"hasDroopyEyelids\": boolean, \"hasClosedEyes\": boolean, \"hasMonolids\": boolean, \"hasBuckTeeth\": boolean, \"hasBlackenedTeeth\": boolean, \"isGroupPhoto\": boolean, \"hasDeepScratches\": boolean, \"noiseLevel\": \"low\"|\"medium\"|\"high\", \"isBlurry\": boolean, \"fabricType\": \"silk\"|\"cotton\"|\"kaki\"|\"wool\"|\"none\", \"needsMicroTexture\": boolean, \"isLowContrast\": boolean, \"isDullColor\": boolean, \"isUnevenSkin\": boolean, \"isVeryBlurry\": boolean, \"isSevereDamage\": boolean, \"hasRankInsignia\": boolean, \"rankDescription\": \"string\", \"isPaintingOrStatue\": boolean, \"hasDeadEyes\": boolean, \"hasStrongExpression\": boolean, \"recommendedGrain\": 0-100, \"recommendedExposure\": 0.1-2.0, \"isHarshLight\": boolean, \"recommendedTextureMode\": \"true_skin\"|\"studio_skin\"|\"smooth\"|\"high_detail\" }";
+                    // --- UPGRADED JSON BRAIN V41 ---
+                    // More explicit instructions for the JSON parser
+                    const promptText = `Analyze this image for restoration. Identify facial features, clothing material, and damage type.
+                    Return ONLY a JSON object with this exact schema:
+                    { 
+                        "sceneContext": "wedding"|"funeral"|"casual"|"studio"|"outdoor"|"product"|"painting"|"ancient_portrait"|"nature", 
+                        "materialType": "paper_photo"|"canvas"|"newspaper"|"silk"|"digital", 
+                        "specificDamage": "scratches"|"mold_spots"|"water_stain"|"tear"|"severe_decay"|"none", 
+                        "colorCast": "sepia"|"cyan"|"red"|"yellow"|"none", 
+                        "estimatedEra": "french_colonial"|"vietnam_war"|"subsidy_period"|"modern"|"unknown", 
+                        "faceSize": "portrait_closeup"|"medium_shot"|"group_small_faces", 
+                        "lightingCondition": "rembrandt"|"golden_hour"|"neon"|"soft_diffused"|"flat"|"overexposed"|"harsh_sun"|"moonlight"|"streetlight", 
+                        "backgroundType": "plain"|"complex_outdoor"|"complex_indoor", 
+                        "hairCondition": "blurry_mess"|"sharp"|"normal", 
+                        "skinTexture": "waxy"|"detailed"|"grainy", 
+                        "fabricDetail": "lost"|"visible", 
+                        "hasJewelry": boolean, "isNature": boolean, "isMilitary": boolean, 
+                        "militaryUniformType": "army_ground"|"air_force"|"navy"|"border_guard"|"public_security"|"youth_volunteer"|"unknown", 
+                        "militaryHatType": "pith_helmet"|"soft_cap"|"kepi_officer"|"kepi_police"|"bamboo_helmet"|"none", 
+                        "hasGoldStarMedal": boolean, "hasResistanceMedal": boolean, "hasYouthBadge": boolean, 
+                        "isBlackAndWhite": boolean, "isAltarPortrait": boolean, "gender": "male"|"female", "age": number, 
+                        "damageType": "scratches"|"faded"|"sepia"|"severe_damage"|"none"|"blur", 
+                        "isOldPhoto": boolean, "isIDPhoto": boolean, "isHazy": boolean, 
+                        "hasStrabismus": boolean, "hasDroopyEyelids": boolean, "hasClosedEyes": boolean, "hasMonolids": boolean, 
+                        "hasBuckTeeth": boolean, "hasBlackenedTeeth": boolean, 
+                        "isGroupPhoto": boolean, "hasDeepScratches": boolean, 
+                        "noiseLevel": "low"|"medium"|"high", "isBlurry": boolean, 
+                        "fabricType": "silk"|"cotton"|"kaki"|"wool"|"none", 
+                        "needsMicroTexture": boolean, "isLowContrast": boolean, "isDullColor": boolean, 
+                        "isUnevenSkin": boolean, "isVeryBlurry": boolean, "isSevereDamage": boolean, 
+                        "hasRankInsignia": boolean, "rankDescription": "string", 
+                        "isPaintingOrStatue": boolean, "hasDeadEyes": boolean, "hasStrongExpression": boolean, 
+                        "recommendedGrain": 0-100, "recommendedExposure": 0.1-2.0, "isHarshLight": boolean 
+                    }`;
                     
                     const headers = { 'Content-Type': 'application/json' }; if (isComet) headers['Authorization'] = `Bearer ${keyToUse}`;
                     const response = await fetch(`${apiBase}/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${keyToUse}`, { method: 'POST', headers: headers, signal: controller.signal, body: JSON.stringify({ contents: [{ parts: [{ text: promptText }, { inlineData: { mimeType: "image/jpeg", data: resizedBase64.split(',')[1] } }] }] }) });
