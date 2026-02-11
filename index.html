@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>PHỤC HỒI ẢNH - AI RESTORATION PRO (V40.00 ULTRA VISION)</title>
+    <title>PHỤC HỒI ẢNH - AI RESTORATION PRO (V41.00 UI UPGRADE)</title>
     
     <!-- FONTS: Apple Style Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -65,6 +65,8 @@
                         'pop-in': 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
                         'text-cycle': 'textCycle 0.6s ease-in-out forwards', 
                         'spin-slow': 'spin 3s linear infinite',
+                        'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+                        'grid-move': 'gridMove 20s linear infinite',
                     },
                     keyframes: {
                         enterUp: { '0%': { opacity: '0', transform: 'translateY(30px) scale(0.95)' }, '100%': { opacity: '1', transform: 'translateY(0) scale(1)' } },
@@ -83,7 +85,8 @@
                             '10%': { opacity: '1', transform: 'translateY(0)' }, 
                             '80%': { opacity: '1', transform: 'translateY(0)' }, 
                             '100%': { opacity: '0', transform: 'translateY(-10px)' } 
-                        }
+                        },
+                        gridMove: { '0%': { transform: 'translateY(0)' }, '100%': { transform: 'translateY(50px)' } }
                     }
                 }
             }
@@ -102,7 +105,7 @@
         }
         input, textarea { -webkit-user-select: text; user-select: text; }
 
-        /* Custom Scrollbar - iOS Style (Hidden mostly) */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
@@ -165,12 +168,11 @@
         .module-content.open .module-inner { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.05); }
         .module-inner { min-height: 0; overflow: hidden; }
 
-        /* iOS Switch / Checkbox - Styled as original but with iOS flair */
+        /* Checkboxes */
         .chk-pro { appearance: none; width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid rgba(142, 142, 147, 0.5); background: transparent; display: grid; place-content: center; cursor: pointer; transition: all 0.2s; }
         .chk-pro::before { content: ""; width: 10px; height: 10px; transform: scale(0); background: #fff; border-radius: 2px; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .chk-pro:checked::before { transform: scale(1); }
         .chk-pro:checked { border-color: #0A84FF; background: #0A84FF; }
-        
         .chk-gold:checked { border-color: #FFD60A; background: #FFD60A; }
         .chk-red:checked { border-color: #FF453A; background: #FF453A; }
         .chk-real:checked { border-color: #FF9F0A; background: #FF9F0A; }
@@ -195,7 +197,7 @@
             #sidebar { width: 100% !important; max-width: 100% !important; border-right: none; background: #000; }
         }
         
-        /* Image Comparison Frame - KEEP ORIGINAL */
+        /* Image Comparison Frame */
         .mobile-image-frame {
             border: 1px solid rgba(255, 255, 255, 0.15); 
             box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.7);
@@ -240,11 +242,11 @@
         }
         .btn-iso-glass:active { background: rgba(255,255,255,0.15); transform: scale(0.97); }
 
-        /* Security Gate iOS Style */
+        /* Security Gate */
         .passcode-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #fff; margin: 0 8px; }
         .passcode-dot.filled { background: #fff; }
 
-        /* Tag in HUD (For Process Status) - REDESIGNED FOR HUD */
+        /* Tag in HUD */
         .scan-tag { 
             display: inline-flex; align-items: center; 
             padding: 2px 6px; margin: 0 2px;
@@ -254,7 +256,7 @@
         }
         .scan-tag.highlight { color: #FFD60A; text-shadow: 0 0 5px rgba(255, 214, 10, 0.5); }
 
-        /* Sequential Log Text (Corner) - Appear then Disappear */
+        /* Sequential Log Text */
         .sequential-log-text {
             display: block;
             font-family: 'JetBrains Mono', monospace;
@@ -276,12 +278,6 @@
         }
         .sequential-log-text::before { content: ">> "; opacity: 0.7; }
 
-        /* Text Mask for HUD */
-        .mask-linear-fade {
-            mask-image: linear-gradient(to right, black 80%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
-        }
-        
         /* History Items */
         .history-item {
             width: 48px; height: 48px;
@@ -291,6 +287,46 @@
             cursor: pointer; transition: transform 0.1s;
         }
         .history-item:hover { transform: scale(1.1); border-color: #0A84FF; }
+
+        /* --- NEW UPGRADED CSS FOR LOADING & PLACEHOLDER --- */
+        
+        /* Grid Background Effect */
+        .cyber-grid-bg {
+            background-image: 
+                linear-gradient(rgba(10, 132, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(10, 132, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            animation: gridMove 20s linear infinite;
+        }
+
+        /* Modern HUD Loader */
+        .loader-ring {
+            border: 3px solid rgba(10, 132, 255, 0.1);
+            border-top: 3px solid #0A84FF;
+            border-radius: 50%;
+            width: 60px; height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        .loader-ring-inner {
+            border: 3px solid rgba(255, 214, 10, 0.1);
+            border-bottom: 3px solid #FFD60A;
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            animation: spin 1.5s linear infinite reverse;
+        }
+        
+        /* Drop Zone Pulse */
+        .drop-zone-pulse {
+            box-shadow: 0 0 0 0 rgba(10, 132, 255, 0.7);
+            animation: dropPulse 2s infinite;
+        }
+        @keyframes dropPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(10, 132, 255, 0.7); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(10, 132, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(10, 132, 255, 0); }
+        }
     </style>
 </head>
 
@@ -300,9 +336,11 @@
     <div class="fixed inset-0 bg-black z-0">
         <div class="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] bg-blue-900/10 rounded-full blur-[120px]"></div>
         <div class="absolute bottom-[-20%] right-[-20%] w-[80vw] h-[80vw] bg-purple-900/10 rounded-full blur-[120px]"></div>
+        <!-- New Subtle Grid for High Tech feel -->
+        <div class="absolute inset-0 cyber-grid-bg opacity-20 pointer-events-none"></div>
     </div>
 
-    <!-- SECURITY GATE (Redesigned: Soft iOS / Mobile First) -->
+    <!-- SECURITY GATE -->
     <div id="security-gate" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-opacity duration-500">
         <!-- Dynamic Background -->
         <div class="absolute inset-0 z-0">
@@ -348,36 +386,43 @@
         </div>
         
         <div class="absolute bottom-8 text-[10px] text-gray-600 font-mono tracking-widest opacity-50">
-            SECURE CONNECTION • V40.00 ULTRA VISION
+            SECURE CONNECTION • V41.00 ULTRA VISION
         </div>
     </div>
     
     <!-- SYSTEM NOTIFICATION AREA -->
     <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-2 pointer-events-none w-auto max-w-sm items-end"></div>
     
-    <!-- NEW: MODERN DYNAMIC ISLAND HUD (Replaces Old Window) -->
-    <div id="scan-window-overlay" class="fixed top-24 lg:top-auto lg:bottom-10 left-1/2 transform -translate-x-1/2 z-[100] flex flex-col items-center justify-center hidden transition-all duration-500 w-max max-w-[90vw]">
-        <div class="pro-hud-container flex items-center gap-4 px-6 py-3 bg-[#1c1c1e]/90 backdrop-blur-2xl border border-white/10 rounded-full shadow-2xl shadow-blue-900/20 ring-1 ring-white/5">
-            <!-- Loader -->
-            <div class="relative w-5 h-5 flex-shrink-0">
-                <div class="absolute inset-0 border-2 border-white/20 rounded-full"></div>
-                <div class="absolute inset-0 border-2 border-t-[#0A84FF] rounded-full animate-spin"></div>
+    <!-- UPGRADED: CYBER HUD LOADING OVERLAY (Replaces old simple pill) -->
+    <div id="scan-window-overlay" class="fixed inset-0 z-[100] flex flex-col items-center justify-center hidden bg-black/40 backdrop-blur-sm transition-all duration-500">
+        <!-- New Central HUD -->
+        <div class="relative w-[80vw] max-w-[300px] bg-[#1c1c1e]/90 backdrop-blur-2xl border border-white/10 rounded-[32px] p-6 shadow-2xl shadow-blue-500/20 ring-1 ring-white/5 flex flex-col items-center animate-enter-up">
+            <!-- Animated Ring Loader -->
+            <div class="relative w-20 h-20 mb-4 flex items-center justify-center">
+                 <div class="loader-ring absolute inset-0"></div>
+                 <div class="loader-ring-inner absolute inset-0 m-auto"></div>
+                 <div class="w-2 h-2 bg-white rounded-full animate-pulse shadow-[0_0_15px_white]"></div>
             </div>
 
-            <!-- Text Info & Tags -->
-            <div class="flex items-center gap-3">
-                <span id="scan-title" class="text-[10px] font-bold text-[#0A84FF] tracking-widest uppercase animate-pulse flex-shrink-0">ĐANG XỬ LÝ...</span>
-                <div class="h-4 w-[1px] bg-white/10"></div>
-                <div id="scan-tags-container" class="flex items-center overflow-hidden max-w-[150px] sm:max-w-[200px] gap-1 mask-linear-fade scroll-smooth">
-                    <!-- Tags will be injected here as text spans -->
-                </div>
+            <!-- Text Info -->
+            <div class="flex flex-col items-center gap-1 mb-4">
+                <span id="scan-title" class="text-xs font-bold text-[#0A84FF] tracking-[2px] uppercase animate-pulse">ĐANG XỬ LÝ...</span>
+                <span class="text-[9px] text-gray-500 font-mono">AI NEURAL NETWORK V41</span>
+            </div>
+            
+            <!-- Divider -->
+            <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent mb-3"></div>
+
+            <!-- Scrolling Tags (Preserved Logic) -->
+            <div id="scan-tags-container" class="flex flex-wrap justify-center gap-1 max-h-[60px] overflow-hidden mask-linear-fade w-full">
+                <!-- Tags will be injected here as text spans by JS -->
             </div>
         </div>
     </div>
 
     <div class="flex w-full h-full relative z-10" id="fullscreen-target">
         
-        <!-- SIDEBAR (iOS Settings Style) -->
+        <!-- SIDEBAR -->
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-[60] w-full sm:w-[380px] flex-shrink-0 glass-panel flex flex-col transition-transform duration-300 ease-out lg:static lg:translate-x-0 -translate-x-full shadow-2xl lg:shadow-none bg-[#000]/90 lg:bg-transparent">
             
             <!-- Sidebar Header -->
@@ -419,10 +464,10 @@
                 <!-- 2. AUTO-PILOT BUTTON -->
                 <button id="btn-auto-pilot" class="w-full py-3.5 bg-gradient-to-r from-[#0A84FF] to-[#0062cc] text-white rounded-xl flex items-center justify-center gap-2 transition-transform active:scale-[0.98] shadow-lg shadow-blue-900/20 group">
                     <svg class="w-4 h-4 animate-pulse group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    <span class="text-xs font-bold tracking-wide">AUTO SCAN V40.00 (ULTRA VISION)</span>
+                    <span class="text-xs font-bold tracking-wide">AUTO SCAN V41.00 (ULTRA VISION)</span>
                 </button>
 
-                <!-- MODULES -->
+                <!-- MODULES (KEPT IDENTICAL TO ORIGINAL) -->
                 <!-- FLUX KONTEXT (LZP) -->
                 <div class="module-group" id="kontext-module-container">
                     <div class="p-4 border-b border-white/5 bg-[#2c2c2e]/50 backdrop-blur-md">
@@ -500,7 +545,6 @@
                                 <select id="rank-select" class="pro-input w-full py-2" data-key="rankSelect"><option value="">-- Tự động / Không chọn --</option><option value="no_rank_insignia">🚫 KHÔNG ĐEO HÀM (ÁO TRƠN)</option><optgroup label="Hạ sĩ quan / Chiến sĩ"><option value="plain red collar tabs, soldier rank">Chiến sĩ (Hàm trơn/Binh nhì-nhất)</option><option value="red collar tabs with one yellow stripe">Hạ sĩ (1 gạch)</option><option value="red collar tabs with two yellow stripes">Trung sĩ (2 gạch)</option><option value="red collar tabs with three yellow stripes">Thượng sĩ (3 gạch)</option></optgroup><optgroup label="Sĩ quan (Sao + Gạch)"><option value="red collar tabs with one star, officer rank">Thiếu úy (1 sao)</option><option value="red collar tabs with two stars, officer rank">Trung úy (2 sao)</option><option value="red collar tabs with three stars, officer rank">Thượng úy (3 sao)</option><option value="red collar tabs with four stars, officer rank">Đại úy (4 sao)</option></optgroup></select>
                              </div>
                              
-                             <!-- PRO UPGRADE: SUPER DETAIL -->
                              <div class="space-y-2 mt-2 pt-2 border-t border-white/10">
                                  <label class="text-[10px] font-bold text-yellow-500 uppercase tracking-widest block">⭐ CHUYÊN SÂU (PRO UPGRADE)</label>
                                  <div class="grid grid-cols-2 gap-2">
@@ -1059,7 +1103,7 @@
                 <div class="flex flex-col items-center">
                      <span class="font-bold text-white text-[14px] tracking-tight">PHỤC HỒI ẢNH</span>
                      <div class="flex items-center gap-2 opacity-60">
-                        <span class="text-[9px] font-mono">V40.00 PRO</span>
+                        <span class="text-[9px] font-mono">V41.00 PRO</span>
                         <span class="text-[9px]">•</span>
                         <span id="mobile-status-text" class="text-[9px] font-mono tracking-widest">WAITING</span>
                      </div>
@@ -1116,7 +1160,7 @@
                               </div>
                          </div>
                          
-                         <!-- CORNER LOG OVERLAY (NEW: Sequential Tag Display) -->
+                         <!-- CORNER LOG OVERLAY (SEQUENTIAL TAGS) -->
                          <div id="scan-log-overlay" class="absolute bottom-4 left-4 z-30 flex flex-col items-start pointer-events-none max-w-[200px] overflow-hidden">
                              <!-- Log lines will appear here dynamically -->
                          </div>
@@ -1124,38 +1168,45 @@
 
                     <canvas id="canvas-process" class="hidden"></canvas>
                     
-                    <div id="placeholder-state" class="text-center p-12 md:p-24 border border-dashed border-gray-700 rounded-3xl bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 backdrop-blur-sm cursor-pointer">
-                        <div class="w-24 h-24 bg-gradient-to-tr from-gray-800 to-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner border border-white/5"><svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l-1.586-1.586a2 2 0 00-2.828 0L6 18H4a2 2 0 01-2-2V6a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v8a2 2 0 01-2 2h-2m-4-4l-3 3m0 0l-3-3m3 3V4"></path></svg></div>
-                        <h3 class="text-xl font-bold text-white tracking-tight mb-2">Chạm để tải ảnh</h3>
-                        <p class="text-xs text-gray-500 font-medium">Hỗ trợ mọi định dạng ảnh</p>
+                    <!-- UPGRADED PLACEHOLDER STATE -->
+                    <div id="placeholder-state" class="text-center p-12 md:p-24 border border-dashed border-gray-700/50 rounded-[40px] bg-gradient-to-br from-white/[0.03] to-white/[0.01] hover:bg-white/[0.05] transition-all duration-500 backdrop-blur-md cursor-pointer group drop-zone-pulse">
+                        <div class="w-28 h-28 relative mx-auto mb-6 group-hover:scale-110 transition-transform duration-500">
+                             <!-- Glowing background behind icon -->
+                             <div class="absolute inset-0 bg-blue-500/20 rounded-full blur-xl animate-pulse"></div>
+                             <div class="relative w-full h-full bg-[#1c1c1e] rounded-full flex items-center justify-center border border-white/10 shadow-2xl">
+                                <svg class="w-12 h-12 text-[#0A84FF] animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l-1.586-1.586a2 2 0 00-2.828 0L6 18H4a2 2 0 01-2-2V6a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v8a2 2 0 01-2 2h-2m-4-4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                             </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white tracking-tight mb-2">Chạm để tải ảnh</h3>
+                        <p class="text-xs text-gray-400 font-medium tracking-wide uppercase">AI Restoration V41 Ultra Vision</p>
                     </div>
                 </div>
             </div>
         </main>
     </div>
     
-    <!-- MOBILE GLASS DOCK -->
+    <!-- MOBILE GLASS DOCK (UPGRADED VISUALS) -->
     <div id="mobile-action-bar" class="lg:hidden fixed bottom-6 left-4 right-4 z-[90] flex items-center justify-center pointer-events-none transition-all duration-500 translate-y-32 opacity-0">
-        <div class="bg-[#1c1c1e]/90 backdrop-blur-xl border border-white/10 p-2 rounded-[24px] shadow-2xl flex gap-3 w-full max-w-sm pointer-events-auto ring-1 ring-white/5">
-            <button id="mob-btn-upload" class="flex-1 py-4 bg-gray-800/80 rounded-[18px] text-white font-bold text-[10px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all shadow-inner">
+        <div class="bg-[#1c1c1e]/80 backdrop-blur-xl border border-white/10 p-2 rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.5)] flex gap-3 w-full max-w-sm pointer-events-auto ring-1 ring-white/10">
+            <button id="mob-btn-upload" class="flex-1 py-4 bg-gray-800/50 rounded-[18px] text-white font-bold text-[10px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all shadow-inner border border-white/5 hover:bg-gray-700/50">
                 <svg class="w-6 h-6 text-[#0A84FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4 4m0 0L8 8m4-4v12"></path></svg>
                 <span>TẢI ẢNH</span>
             </button>
-            <button id="mob-btn-scan" class="hidden flex-1 py-4 bg-[#0A84FF] rounded-[18px] text-white font-bold text-[10px] flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition-all">
+            <button id="mob-btn-scan" class="hidden flex-1 py-4 bg-[#0A84FF] rounded-[18px] text-white font-bold text-[10px] flex flex-col items-center justify-center gap-1 shadow-lg shadow-blue-500/30 active:scale-95 transition-all border border-blue-400/20">
                 <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 <span>SCAN</span>
             </button>
-            <button id="mob-btn-run" class="hidden flex-1 py-4 bg-[#30D158] rounded-[18px] text-white font-bold text-[10px] flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition-all">
+            <button id="mob-btn-run" class="hidden flex-1 py-4 bg-[#30D158] rounded-[18px] text-white font-bold text-[10px] flex flex-col items-center justify-center gap-1 shadow-lg shadow-green-500/30 active:scale-95 transition-all border border-green-400/20">
                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 <span>CHẠY</span>
             </button>
-            <button id="mob-btn-reset" class="w-16 flex flex-col items-center justify-center bg-white/5 text-gray-400 rounded-[18px] active:scale-95 transition-all border border-white/5">
+            <button id="mob-btn-reset" class="w-16 flex flex-col items-center justify-center bg-white/5 text-gray-400 rounded-[18px] active:scale-95 transition-all border border-white/5 hover:bg-white/10 hover:text-white">
                 <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             </button>
         </div>
     </div>
 
-    <!-- RECHARGE MODAL (Redesigned: Soft iOS Style) -->
+    <!-- RECHARGE MODAL -->
     <div id="recharge-modal" class="fixed inset-0 z-[110] bg-black/80 backdrop-blur-2xl hidden flex items-center justify-center modal-fade-in p-4 overflow-y-auto">
         <div class="w-full max-w-[400px] bg-[#1c1c1e] border border-white/10 rounded-[32px] shadow-2xl flex flex-col relative overflow-hidden">
             <button id="close-recharge" class="absolute top-4 right-4 z-50 p-2 bg-[#2c2c2e]/80 backdrop-blur-md rounded-full text-gray-400 hover:text-white transition-all hover:scale-110 active:scale-95">
@@ -1169,7 +1220,7 @@
                 <p class="text-[12px] text-gray-400 mt-1">1 Credit = 1 Lần xử lý ảnh chất lượng cao.</p>
             </div>
 
-            <!-- Packages (UPDATED AS REQUESTED) -->
+            <!-- Packages -->
             <div class="px-6 space-y-3 max-h-[40vh] overflow-y-auto custom-scrollbar">
                 
                 <!-- 50k - 4 Credit -->
@@ -1300,7 +1351,7 @@
                 deviceId: null,
                 credits: 0,
                 ipAddress: null, 
-                history: [], // Added History Array
+                history: [], 
                 
                 async init() {
                     try {
@@ -1317,7 +1368,7 @@
                     
                     await this.fetchIP();
                     this.loadCredits();
-                    this.loadHistory(); // Added
+                    this.loadHistory(); 
 
                     try {
                         const currentHost = window.location.hostname;
@@ -1427,14 +1478,12 @@
                 },
                 
                 loadHistory() {
-                    // Added: Load recent history
                     const h = localStorage.getItem('v37_history');
                     if(h) this.history = JSON.parse(h);
                     this.renderHistory();
                 },
                 
                 addHistory(imgData) {
-                    // Add new image to history (max 10)
                     this.history.unshift(imgData);
                     if(this.history.length > 10) this.history.pop();
                     localStorage.setItem('v37_history', JSON.stringify(this.history));
@@ -1454,7 +1503,6 @@
                         d.className = 'history-item flex-shrink-0';
                         d.style.backgroundImage = `url(${src})`;
                         d.onclick = () => {
-                            // Restore from history
                              const imgModified = document.getElementById('img-modified');
                              imgModified.src = src;
                              showToast("Đã tải lại từ lịch sử", "success");
@@ -1511,7 +1559,6 @@
                 if(mobileBar) mobileBar.classList.remove('translate-y-32', 'opacity-0'); 
             }
             
-            // Mobile Credit Click to Open Recharge
             const mobCredit = document.getElementById('mobile-credit-display');
             if(mobCredit) {
                 mobCredit.onclick = () => document.getElementById('recharge-modal').classList.remove('hidden');
@@ -1530,15 +1577,12 @@
                 const template = 'compact'; 
 
                 const updateQR = (amount) => {
-                    // CẬP NHẬT: Kèm ID khách hàng vào nội dung chuyển khoản
-                    // Định dạng: V37 [DEVICE-ID] (Updated V37)
                     const content = `V37 ${deviceId}`; 
                     const url = `https://img.vietqr.io/image/${bankId}-${accNo}-${template}.png?amount=${amount}&addInfo=${encodeURIComponent(content)}&accountName=${encodeURIComponent(accName)}`;
                     qrImage.src = url;
                     if(contentDisplay) contentDisplay.textContent = content;
                 };
 
-                // Default 100k
                 updateQR(100000);
 
                 pkgCards.forEach(card => {
@@ -1640,7 +1684,6 @@
                 setTimeout(() => { toast.classList.add('animate-fade-out'); setTimeout(() => toast.remove(), 500); }, 3000);
             };
             
-            // --- SCAN WINDOW LOGIC ---
             function showScanWindow() {
                 const win = document.getElementById('scan-window-overlay');
                 if(win) win.classList.remove('hidden');
@@ -1655,10 +1698,8 @@
                 const container = document.getElementById('scan-tags-container');
                 if(!container) return;
                 
-                // Clear existing
                 container.innerHTML = '';
                 
-                // Add tags immediately (for status window)
                 messages.forEach((msg) => {
                     const tag = document.createElement('span');
                     tag.className = 'scan-tag';
@@ -1670,18 +1711,15 @@
                 });
             }
 
-            // NEW: SEQUENTIAL CORNER LOG EFFECT (APPEAR THEN DISAPPEAR)
             function playSequentialLog(messages) {
                 const container = document.getElementById('scan-log-overlay');
                 if (!container) return;
 
-                container.innerHTML = ''; // Reset
+                container.innerHTML = ''; 
 
-                // Process sequentially using a timer loop
                 let delay = 0;
                 messages.forEach((msg) => {
                     setTimeout(() => {
-                        // Clear previous
                         container.innerHTML = '';
                         
                         const line = document.createElement('span');
@@ -1700,51 +1738,41 @@
                         
                     }, delay);
                     
-                    delay += 300; // Wait for animation to almost finish before next
+                    delay += 300; 
                 });
                 
-                // Clear after all done
                 setTimeout(() => {
                     container.innerHTML = '';
                 }, delay + 2000);
             }
             
-            // Helper to get active settings for status window
             function getActiveSettings() {
                 const settings = [];
                 
-                // Check basic checkboxes
                 if(document.getElementById('mode-flux')?.checked) settings.push("FLUX ENGINE: ON");
                 if(document.getElementById('mode-replica')?.checked) settings.push("REPLICA MODE");
                 if(document.getElementById('check-face')?.checked) settings.push("FACE DETAIL");
                 if(document.getElementById('check-hair')?.checked) settings.push("HAIR DRAWING");
                 if(document.getElementById('check-background')?.checked) settings.push("BG SHARPEN");
                 
-                // Check Upscale
                 const upscale = document.getElementById('upscale-mode');
                 if(upscale && upscale.value !== 'none') {
                     const text = upscale.options[upscale.selectedIndex].text;
-                    // Extract simple name
-                    let simpleName = text.split('(')[0].trim().replace(/^[^\w\s]+/, ''); // Remove emoji
+                    let simpleName = text.split('(')[0].trim().replace(/^[^\w\s]+/, ''); 
                     settings.push(`UPSCALE: ${simpleName}`);
                 }
                 
-                // Check Workflow
                 const workflow = document.getElementById('kontext-workflow');
                 if(workflow && workflow.value !== 'default') {
-                     // Extract simple name
                     let simpleName = workflow.options[workflow.selectedIndex].text.split('(')[0].trim().replace(/^[^\w\s]+/, '');
                     settings.push(`WORKFLOW: ${simpleName}`);
                 }
                 
-                // Check Logo
                 if(document.getElementById('check-logo')?.checked) settings.push("WATERMARK: ON");
                 
-                // Expert Mode
                 if(document.getElementById('check-ultra-sharp')?.checked) settings.push("ULTRA-SHARP: ON");
                 if(document.getElementById('check-deep-scratch')?.checked) settings.push("DEEP SCRATCH FIX: ON");
                 
-                // Material Mode (V38 Added)
                 if(document.getElementById('check-silk-texture')?.checked) settings.push("SILK TEXTURE: ON");
                 if(document.getElementById('check-kaki-texture')?.checked) settings.push("KAKI FABRIC: ON");
                 if(document.getElementById('check-micro-skin')?.checked) settings.push("MICRO SKIN: ON");
@@ -1833,15 +1861,11 @@
                     processBtn.innerHTML = "TẠO ẢNH (FLUX/QWEN ENGINE)"; 
                 }
                 
-                // Show Scan Window (Status Window)
                 showScanWindow();
                 document.getElementById('scan-title').innerText = "ĐANG XỬ LÝ ẢNH...";
-                // Populate tags with active settings
                 const activeSettings = getActiveSettings();
                 updateScanTags(activeSettings);
                 
-                // Show traditional terminal if needed, or rely on status
-                // document.getElementById('ai-terminal-overlay').classList.remove('hidden'); 
                 document.getElementById('scan-beam').classList.add('active');
                 
                 const magicDust = document.getElementById('magic-dust');
@@ -1882,7 +1906,6 @@
                     }
 
                     const workflowSelect = document.getElementById('kontext-workflow');
-                    // ADDED LOGIC FOR NEW WORKFLOWS FROM INDEX1
                     if (workflowSelect) {
                         if (workflowSelect.value === 'qwen_edit_pro') {
                             finalPrompt = "Instruction: " + finalPrompt; 
@@ -1913,14 +1936,11 @@
                          finalPrompt += ", (vibrant color palette:1.3), (modern cinematic lighting:1.2), (high saturation:1.1)";
                     }
 
-                    // ADDED LOGIC FOR MILITARY EXTRAS FROM INDEX1
                     const isInsigniaBoost = document.getElementById('check-insignia-boost')?.checked || false;
                     const isBlockRank = document.getElementById('block-rank')?.checked || false;
                     const isMetalShader = document.getElementById('check-metal-shader')?.checked || false;
                     const isFabricDetail = document.getElementById('check-fabric-detail')?.checked || false;
 
-                    // *** V36.50 PROMPT INJECTION LOGIC FOR MILITARY ***
-                    // 1. Hat Specifics
                     const hatVal = document.getElementById('hat-select')?.value || "";
                     if(hatVal.includes("pith helmet")) {
                         finalPrompt += ", (green vietnamese pith helmet:1.6), (hard shell texture:1.3), (round shape), (red circular badge with raised yellow star:1.5), (worn leather chin strap:1.2)";
@@ -1928,7 +1948,6 @@
                          finalPrompt += ", (structured officer kepi hat:1.5), (stiff visor), (gold band details), (raised metal star insignia)";
                     }
 
-                    // 2. Uniform Specifics
                     const uniformVal = document.getElementById('mil-uniform')?.value || "";
                     if(uniformVal.includes("to chau")) {
                         finalPrompt += ", (to chau military uniform:1.5), (faded green fabric), (buttoned chest pockets), (loose fitting trousers), (simple collar)";
@@ -1936,7 +1955,6 @@
                          finalPrompt += ", (padded cotton jacket:1.5), (diamond quilted texture:1.4), (thick warm fabric), (collarless or simple collar)";
                     }
 
-                    // 3. Pro Boosters
                     if (isInsigniaBoost) finalPrompt += `, (hyper detailed military insignia:1.7), (macro photography of medals), (sharp defined star shape), (distinct collar tabs)`;
                     
                     if (isMetalShader) {
@@ -1949,7 +1967,6 @@
 
                     if (isBlockRank) finalPrompt += `, (plain collar:1.5), (no rank insignia:1.5), (smooth collar fabric)`;
 
-                    // ADDED LOGIC FOR EXPOSURE STRENGTH FROM INDEX1
                     const isQwenExposure = document.getElementById('check-qwen-exposure')?.checked || false;
                     const exposureStrength = parseFloat(document.getElementById('exposure-slider')?.value || 1.0);
                     if (isQwenExposure) {
@@ -1959,7 +1976,6 @@
                         }
                     }
                     
-                    // *** V37 EXPERT UPGRADES ***
                     const denoiseVal = parseFloat(document.getElementById('denoise-slider')?.value || 0.5);
                     const isUltraSharp = document.getElementById('check-ultra-sharp')?.checked || false;
                     const isDeepScratch = document.getElementById('check-deep-scratch')?.checked || false;
@@ -1974,7 +1990,6 @@
                         finalPrompt += ", (inpainting huge cracks:1.6), (fill white scratches:1.5), (reconstruct missing parts), (heal damage)";
                     }
                     
-                    // *** V38 MATERIAL UPGRADES ***
                     const isSilk = document.getElementById('check-silk-texture')?.checked;
                     const isKaki = document.getElementById('check-kaki-texture')?.checked;
                     const isMicroSkin = document.getElementById('check-micro-skin')?.checked;
@@ -1983,7 +1998,6 @@
                     if(isKaki) finalPrompt += ", (rough canvas texture:1.4), (matte fabric), (detailed weave pattern:1.3), (stiff material)";
                     if(isMicroSkin) finalPrompt += ", (hyper realistic skin pores:1.5), (visible skin texture), (natural blemishes), (no plastic skin)";
 
-                    // *** V39 SOUL AI UPGRADES ***
                     const isEyeGlint = document.getElementById('check-eye-glint')?.checked;
                     const isMicroExp = document.getElementById('check-micro-expression')?.checked;
                     
@@ -2039,7 +2053,6 @@
                             document.getElementById('slider-handle').style.display = 'flex'; 
                             document.querySelector('.comp-label.after').style.display = 'block';
                             
-                            // Add to history
                             UserSystem.addHistory(finalImgSrc);
                             
                             updateMobileBtnState('done');
@@ -2053,7 +2066,6 @@
                         processBtn.disabled = false; 
                         processBtn.innerHTML = "TẠO ẢNH (FLUX/QWEN ENGINE)"; 
                     }
-                    // Hide status window when done
                     hideScanWindow();
                     
                     document.getElementById('scan-beam').classList.remove('active'); 
@@ -2069,9 +2081,7 @@
                 btnAutoPilot.disabled = true;
                 btnAutoPilot.innerHTML = `<span class="animate-pulse">AUTO-SCANNING...</span>`;
                 
-                // Do NOT Show Window for Auto Scan anymore
-                // showScanWindow(); 
-                document.getElementById('scan-log-overlay').innerHTML = ''; // Reset log
+                document.getElementById('scan-log-overlay').innerHTML = ''; 
                 
                 updateMobileBtnState('scanning');
                 const { key: keyToUse, base: apiBase, isComet } = getApiConfig();
@@ -2085,7 +2095,6 @@
                     const resizedBase64 = await resizeImage(state.base64);
                     const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 40000);
                     
-                    // UPDATED PROMPT FOR V40.00 ULTRA VISION (FULL MAPPING)
                     const promptText = "Analyze this image for photo restoration. Return ONLY JSON: { \"sceneContext\": \"wedding\"|\"funeral\"|\"casual\"|\"studio\"|\"outdoor\"|\"product\"|\"painting\"|\"ancient_portrait\"|\"nature\", \"materialType\": \"paper_photo\"|\"canvas\"|\"newspaper\"|\"silk\"|\"digital\", \"specificDamage\": \"scratches\"|\"mold_spots\"|\"water_stain\"|\"tear\"|\"severe_decay\"|\"none\", \"colorCast\": \"sepia\"|\"cyan\"|\"red\"|\"yellow\"|\"none\", \"estimatedEra\": \"french_colonial\"|\"vietnam_war\"|\"subsidy_period\"|\"modern\"|\"unknown\", \"faceSize\": \"portrait_closeup\"|\"medium_shot\"|\"group_small_faces\", \"lightingCondition\": \"rembrandt\"|\"golden_hour\"|\"neon\"|\"soft_diffused\"|\"flat\"|\"overexposed\"|\"harsh_sun\"|\"moonlight\"|\"streetlight\", \"backgroundType\": \"plain\"|\"complex_outdoor\"|\"complex_indoor\", \"hairCondition\": \"blurry_mess\"|\"sharp\"|\"normal\", \"skinTexture\": \"waxy\"|\"detailed\"|\"grainy\", \"fabricDetail\": \"lost\"|\"visible\", \"hasJewelry\": boolean, \"isNature\": boolean, \"isMilitary\": boolean, \"militaryUniformType\": \"army_ground\"|\"air_force\"|\"navy\"|\"border_guard\"|\"public_security\"|\"youth_volunteer\"|\"unknown\", \"militaryHatType\": \"pith_helmet\"|\"soft_cap\"|\"kepi_officer\"|\"kepi_police\"|\"bamboo_helmet\"|\"none\", \"hasGoldStarMedal\": boolean, \"hasResistanceMedal\": boolean, \"hasYouthBadge\": boolean, \"isBlackAndWhite\": boolean, \"isAltarPortrait\": boolean, \"gender\": \"male\"|\"female\", \"age\": number, \"damageType\": \"scratches\"|\"faded\"|\"sepia\"|\"severe_damage\"|\"none\"|\"blur\", \"isOldPhoto\": boolean, \"isIDPhoto\": boolean, \"isHazy\": boolean, \"hasStrabismus\": boolean, \"hasDroopyEyelids\": boolean, \"hasClosedEyes\": boolean, \"hasMonolids\": boolean, \"hasBuckTeeth\": boolean, \"hasBlackenedTeeth\": boolean, \"isGroupPhoto\": boolean, \"hasDeepScratches\": boolean, \"noiseLevel\": \"low\"|\"medium\"|\"high\", \"isBlurry\": boolean, \"fabricType\": \"silk\"|\"cotton\"|\"kaki\"|\"wool\"|\"none\", \"needsMicroTexture\": boolean, \"isLowContrast\": boolean, \"isDullColor\": boolean, \"isUnevenSkin\": boolean, \"isVeryBlurry\": boolean, \"isSevereDamage\": boolean, \"hasRankInsignia\": boolean, \"rankDescription\": \"string\", \"isPaintingOrStatue\": boolean, \"hasDeadEyes\": boolean, \"hasStrongExpression\": boolean, \"recommendedGrain\": 0-100, \"recommendedExposure\": 0.1-2.0, \"isHarshLight\": boolean, \"recommendedTextureMode\": \"true_skin\"|\"studio_skin\"|\"smooth\"|\"high_detail\" }";
                     
                     const headers = { 'Content-Type': 'application/json' }; if (isComet) headers['Authorization'] = `Bearer ${keyToUse}`;
@@ -2107,7 +2116,6 @@
                         const setChecked = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
                         const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
 
-                        // --- BASIC MAPPING ---
                         if(document.getElementById('gender-select')) {
                             const genderVal = result.gender === 'male' ? 'male' : (result.gender === 'female' ? 'female' : '');
                             document.getElementById('gender-select').value = genderVal;
@@ -2131,19 +2139,15 @@
                             autoReport.push("PHÁT HIỆN: ẢNH THỜ");
                         }
                         
-                        // --- MILITARY ---
                         if(result.isMilitary) { 
                             const contentMilitary = document.getElementById('content-military');
                             if(contentMilitary) contentMilitary.classList.add('open'); 
                             autoReport.push("PHÁT HIỆN: QUÂN PHỤC");
-                            // Auto boost insignia logic
                             setChecked('check-insignia-boost', true);
                             
-                            // *** V36.50 AUTO ENABLE PRO FEATURES ***
                             setChecked('check-metal-shader', true);
                             setChecked('check-fabric-detail', true);
                             autoReport.push("AUTO: PRO METAL/FABRIC");
-                            // *************************************
 
                             if(result.militaryUniformType === 'public_security') {
                                 document.getElementById('mil-branch').value = "vietnamese public security, green uniform, red collar tabs";
@@ -2174,7 +2178,6 @@
                             if(result.hasResistanceMedal) { setChecked('check-khang-chien', true); autoReport.push("AUTO: HC KHÁNG CHIẾN"); }
                             if(result.hasYouthBadge) { setChecked('check-doan', true); autoReport.push("AUTO: HUY HIỆU ĐOÀN"); }
                             
-                            // V40.0 NEW: Check rank insignia
                             if (!result.hasRankInsignia) {
                                 setChecked('block-rank', true);
                                 autoReport.push("AUTO: CHẶN VẼ QUÂN HÀM");
@@ -2262,7 +2265,6 @@
                             autoReport.push("AUTO: LÀM NÉT TRANG SỨC");
                         }
                         
-                        // *** V37 EXPERT AUTO LOGIC (MỚI THÊM) ***
                         if (result.hasDeepScratches || result.specificDamage === 'severe_decay' || result.damageType === 'severe_damage') {
                             setChecked('check-deep-scratch', true);
                             autoReport.push("AUTO: XÓA XƯỚC SÂU (DEEP)");
@@ -2277,7 +2279,6 @@
                             if(expertMod) expertMod.classList.add('open');
                         }
 
-                        // Auto Adjust Denoise Slider based on noise level
                         const denoiseSlider = document.getElementById('denoise-slider');
                         const denoiseValDisplay = document.getElementById('denoise-val');
                         if (denoiseSlider && result.noiseLevel) {
@@ -2290,7 +2291,6 @@
                             autoReport.push(`AUTO: DENOISE ${val}`);
                         }
                         
-                        // *** V38 MATERIAL AUTO LOGIC (MỚI) ***
                         if(result.fabricType === 'silk' || result.sceneContext === 'wedding' || (result.sceneContext === 'ancient_portrait' && result.gender === 'female')) {
                             setChecked('check-silk-texture', true);
                             autoReport.push("AUTO: CHẤT LIỆU LỤA");
@@ -2308,7 +2308,6 @@
                             autoReport.push("AUTO: MICRO SKIN");
                         }
                         
-                        // *** V40.0 ULTRA VISION MAPPING (NEW - FULL COVERAGE) ***
                         if (result.isLowContrast) { setChecked('check-contrast-fix', true); autoReport.push("AUTO: FIX TƯƠNG PHẢN"); }
                         if (result.isDullColor) { setChecked('check-vibrant', true); autoReport.push("AUTO: LZP COLOR"); }
                         if (result.isUnevenSkin) { setChecked('check-uniform-skin', true); autoReport.push("AUTO: ĐỀU MÀU DA"); }
@@ -2318,7 +2317,6 @@
                         if (result.hasDeadEyes) { setChecked('check-eye-glint', true); autoReport.push("AUTO: TẠO ÁNH MẮT"); }
                         if (result.hasStrongExpression) { setChecked('check-micro-expression', true); autoReport.push("AUTO: GIỮ BIỂU CẢM"); }
                         
-                        // New Sliders & Selects Automation
                         if (result.recommendedGrain !== undefined) {
                             setVal('grain-slider', result.recommendedGrain);
                             const gVal = document.getElementById('grain-val');
@@ -2352,8 +2350,6 @@
                              setVal('event-context', 'luxury_interior');
                         }
 
-
-                        // *** MISSING AUTO CHECKS (BỔ SUNG) ***
                         if (result.lightingCondition === 'harsh_sun' || result.lightingCondition === 'overexposed') {
                             setChecked('check-qwen-exposure', true);
                             setChecked('check-remove-shadow', true);
@@ -2366,7 +2362,6 @@
                             setChecked('check-dehaze', true);
                             autoReport.push("AUTO: KHỬ SƯƠNG MÙ");
                         }
-                        // ****************************************
                         
                         const promptMain = document.getElementById('prompt-main');
                         if(promptMain) promptMain.value = smartPrompt;
@@ -2420,7 +2415,6 @@
 
                         if (window.innerWidth >= 1024) { openSidebar(); } 
                         
-                        // NEW LOGIC: SEQUENTIAL LOG (CORNER) INSTEAD OF WINDOW
                         playSequentialLog(autoReport); 
                         
                         updateMobileBtnState('run');
@@ -2452,7 +2446,7 @@
             document.getElementById('slider-handle').style.left = '0%'; 
             document.getElementById('slider-handle').style.display = 'none'; 
             document.querySelector('.comp-label.after').style.display = 'none'; 
-            document.getElementById('scan-log-overlay').innerHTML = ''; // Reset log
+            document.getElementById('scan-log-overlay').innerHTML = ''; 
 
             showToast(`Đã tải ảnh: ${img.width}x${img.height}`, "success"); updateMobileBtnState('scan'); }; img.src = e.target.result; }; reader.readAsDataURL(file); };
             const fileInput = document.getElementById('image-upload'); if(fileInput) fileInput.addEventListener('change', (e) => { if (e.target.files.length > 0) { loadImg(e.target.files[0]); e.target.value = ''; } });
@@ -2462,7 +2456,6 @@
             if(mobBtnUpload) mobBtnUpload.onclick = () => document.getElementById('image-upload').click();
             if(mobBtnScan) mobBtnScan.onclick = () => document.getElementById('btn-auto-pilot').click();
             
-            // CLICK TO UPLOAD FOR PLACEHOLDER (ADDED)
             const placeholderEl = document.getElementById('placeholder-state');
             if(placeholderEl) {
                 placeholderEl.addEventListener('click', () => {
