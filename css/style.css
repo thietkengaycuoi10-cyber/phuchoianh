@@ -1,0 +1,88 @@
+/* Reset cơ bản */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+body {
+    background-color: #f0f2f5;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Khung chính điện thoại/web */
+.container, .admin-container {
+    width: 100%;
+    max-width: 480px; /* Giới hạn chiều rộng giống app mobile */
+    background: #fff;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, #1a1a1a, #333);
+    color: #ffd700; /* Màu vàng kim */
+    padding: 20px;
+    text-align: center;
+    border-bottom: 4px solid #d4af37;
+}
+
+.brand-name { font-size: 24px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+.hotline { font-size: 14px; color: #fff; }
+
+/* Main Content */
+.main-content { flex: 1; padding: 20px; text-align: center; }
+
+.upload-box {
+    border: 2px dashed #ccc;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    background: #fafafa;
+}
+
+.icon-upload { font-size: 50px; margin-bottom: 10px; }
+
+/* Buttons */
+.btn-primary {
+    background: #007bff; color: white; border: none; padding: 12px 24px;
+    border-radius: 25px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 10px;
+    transition: 0.3s;
+}
+.btn-primary:hover { background: #0056b3; }
+
+.btn-success {
+    background: #28a745; color: white; border: none; padding: 10px 20px;
+    border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px;
+}
+
+.btn-logout {
+    background: #dc3545; color: white; border: none; padding: 10px;
+    border-radius: 8px; margin-top: 20px; width: 100%; cursor: pointer;
+}
+
+/* Input Fields */
+input {
+    width: 100%; padding: 12px; margin: 10px 0;
+    border: 1px solid #ddd; border-radius: 8px; font-size: 16px;
+}
+
+/* Footer */
+.footer {
+    background: #222; color: white; padding: 20px;
+    text-align: center; font-size: 14px;
+}
+.highlight { color: #ffd700; font-weight: bold; font-size: 16px; }
+.bank-info p { margin: 5px 0; }
+
+/* Admin Specific */
+.admin-container { padding: 20px; text-align: center; }
+.card {
+    background: #fff; border: 1px solid #eee;
+    padding: 15px; border-radius: 10px;
+    margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-align: left;
+}
+.error-msg { color: red; margin-top: 10px; }
