@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>PHỤC HỒI ẢNH - AI RESTORATION PRO (V36.60 MOBILE OPTIMIZED)</title>
+    <title>PHỤC HỒI ẢNH - AI RESTORATION PRO (V40.00 ULTRA VISION)</title>
     
     <!-- FONTS: Apple Style Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -63,7 +63,7 @@
                         'typewriter': 'typewriter 0.5s steps(40, end)',
                         'shimmer-fast': 'shimmer 1.5s linear infinite',
                         'pop-in': 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
-                        'text-cycle': 'textCycle 2s ease-in-out forwards', 
+                        'text-cycle': 'textCycle 0.6s ease-in-out forwards', 
                         'spin-slow': 'spin 3s linear infinite',
                     },
                     keyframes: {
@@ -267,7 +267,7 @@
             padding: 4px 8px;
             border-radius: 4px;
             border-left: 2px solid #0A84FF;
-            animation: text-cycle 1.8s ease-in-out forwards;
+            animation: text-cycle 0.6s ease-in-out forwards;
         }
         .sequential-log-text.highlight { 
             color: #FFD60A; 
@@ -281,6 +281,16 @@
             mask-image: linear-gradient(to right, black 80%, transparent 100%);
             -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
         }
+        
+        /* History Items */
+        .history-item {
+            width: 48px; height: 48px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background-size: cover; background-position: center;
+            cursor: pointer; transition: transform 0.1s;
+        }
+        .history-item:hover { transform: scale(1.1); border-color: #0A84FF; }
     </style>
 </head>
 
@@ -327,7 +337,7 @@
                 </div>
             </div>
 
-            <!-- Action Button - TEXT CHANGED HERE -->
+            <!-- Action Button -->
             <button id="gate-submit" class="w-full py-4 bg-white text-black rounded-[20px] text-[15px] font-bold tracking-wide transition-all active:scale-95 shadow-lg shadow-white/10 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 mb-8 animate-enter-up flex items-center justify-center gap-2" style="animation-delay: 0.2s;" disabled>
                 <span>VÀO PHỤC HỒI ẢNH</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -338,7 +348,7 @@
         </div>
         
         <div class="absolute bottom-8 text-[10px] text-gray-600 font-mono tracking-widest opacity-50">
-            SECURE CONNECTION • V36.60 (MOBILE PRO)
+            SECURE CONNECTION • V40.00 ULTRA VISION
         </div>
     </div>
     
@@ -346,7 +356,6 @@
     <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-2 pointer-events-none w-auto max-w-sm items-end"></div>
     
     <!-- NEW: MODERN DYNAMIC ISLAND HUD (Replaces Old Window) -->
-    <!-- This is the "New Interface" to replace the ugly box. It's a sleek bar at the bottom. -->
     <div id="scan-window-overlay" class="fixed top-24 lg:top-auto lg:bottom-10 left-1/2 transform -translate-x-1/2 z-[100] flex flex-col items-center justify-center hidden transition-all duration-500 w-max max-w-[90vw]">
         <div class="pro-hud-container flex items-center gap-4 px-6 py-3 bg-[#1c1c1e]/90 backdrop-blur-2xl border border-white/10 rounded-full shadow-2xl shadow-blue-900/20 ring-1 ring-white/5">
             <!-- Loader -->
@@ -410,7 +419,7 @@
                 <!-- 2. AUTO-PILOT BUTTON -->
                 <button id="btn-auto-pilot" class="w-full py-3.5 bg-gradient-to-r from-[#0A84FF] to-[#0062cc] text-white rounded-xl flex items-center justify-center gap-2 transition-transform active:scale-[0.98] shadow-lg shadow-blue-900/20 group">
                     <svg class="w-4 h-4 animate-pulse group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    <span class="text-xs font-bold tracking-wide">AUTO SCAN V36.50 (MILITARY TACTIC)</span>
+                    <span class="text-xs font-bold tracking-wide">AUTO SCAN V40.00 (ULTRA VISION)</span>
                 </button>
 
                 <!-- MODULES -->
@@ -506,7 +515,6 @@
                                 <div class="flex items-center gap-2"><input id="check-chien-si" type="checkbox" class="chk-pro save-input"><label for="check-chien-si" class="text-[11px] text-gray-300">Danh hiệu Chiến sĩ</label></div>
                                 <div class="flex items-center gap-2"><input id="check-doan" type="checkbox" class="chk-pro save-input"><label for="check-doan" class="text-[11px] text-[#0A84FF]">Huy hiệu Đoàn</label></div>
                              </div>
-                             <!-- ADDED FROM INDEX1: INSIGNIA BOOST & BLOCK RANK -->
                              <div class="flex items-center gap-2 p-2 rounded border border-yellow-500/20 bg-yellow-500/10 mt-1">
                                 <input id="check-insignia-boost" type="checkbox" class="chk-pro save-input">
                                 <label for="check-insignia-boost" class="cursor-pointer select-none flex-1">
@@ -519,6 +527,69 @@
                                 <label for="block-rank" class="cursor-pointer select-none flex-1">
                                     <span class="block text-[10px] font-bold text-red-400">CHẶN VẼ QUÂN HÀM (GIỮ CỔ ÁO TRƠN)</span>
                                     <span class="block text-[8px] text-red-500/70">Tick vào nếu ảnh gốc không có ve/hàm mà AI cứ vẽ thêm</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADDED MODULE: VẬT LIỆU & BỀ MẶT 2026 (MỚI) -->
+                <div class="module-group" id="module-material">
+                    <button id="toggle-material" class="module-header w-full">
+                         <div class="flex items-center gap-2">
+                            <span class="text-[12px] font-bold text-[#30D158] tracking-wide uppercase">🧶 VẬT LIỆU & BỀ MẶT (2026)</span>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-500 transition-transform" id="icon-material" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-material" class="module-content">
+                        <div class="module-inner space-y-3">
+                             <div class="flex items-center gap-2 p-2 rounded border border-[#30D158]/20 bg-[#30D158]/10">
+                                <input id="check-silk-texture" type="checkbox" class="chk-pro save-input">
+                                <label for="check-silk-texture" class="flex-1 cursor-pointer select-none">
+                                    <span class="block text-[10px] font-bold text-[#30D158]">TÁI TẠO LỤA / GẤM (SILK)</span>
+                                    <span class="block text-[9px] text-[#30D158]/70">Dành cho Áo dài, Áo gấm (Bóng & Mịn)</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center gap-2 p-2 rounded border border-orange-500/20 bg-orange-500/10">
+                                <input id="check-kaki-texture" type="checkbox" class="chk-pro chk-real save-input">
+                                <label for="check-kaki-texture" class="flex-1 cursor-pointer select-none">
+                                    <span class="block text-[10px] font-bold text-orange-400">TÁI TẠO KAKI / VẢI THÔ</span>
+                                    <span class="block text-[9px] text-orange-400/70">Dành cho Quân phục, Áo trấn thủ (Sần & Nhám)</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center gap-2 p-2 rounded border border-pink-500/20 bg-pink-500/10">
+                                <input id="check-micro-skin" type="checkbox" class="chk-pro chk-gold save-input">
+                                <label for="check-micro-skin" class="flex-1 cursor-pointer select-none">
+                                    <span class="block text-[10px] font-bold text-pink-400">MICRO-TEXTURE DA (THẬT 100%)</span>
+                                    <span class="block text-[9px] text-pink-400/70">Tái tạo lỗ chân lông & vân da (Chống da nhựa)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODULE: CẢM XÚC & HỒN ẢNH (2026 NEW) -->
+                <div class="module-group" id="module-emotion">
+                    <button id="toggle-emotion" class="module-header w-full">
+                         <div class="flex items-center gap-2">
+                            <span class="text-[12px] font-bold text-pink-500 tracking-wide uppercase">🧠 CẢM XÚC & HỒN ẢNH (SOUL AI)</span>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-500 transition-transform" id="icon-emotion" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-emotion" class="module-content">
+                        <div class="module-inner space-y-3">
+                             <div class="flex items-center gap-2 p-2 rounded border border-pink-500/20 bg-pink-500/10">
+                                <input id="check-eye-glint" type="checkbox" class="chk-pro save-input">
+                                <label for="check-eye-glint" class="flex-1 cursor-pointer select-none">
+                                    <span class="block text-[10px] font-bold text-pink-400">TẠO ÁNH MẮT CÓ HỒN (EYE GLINT)</span>
+                                    <span class="block text-[9px] text-pink-400/70">Thêm điểm sáng phản chiếu trong mắt</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center gap-2 p-2 rounded border border-purple-500/20 bg-purple-500/10">
+                                <input id="check-micro-expression" type="checkbox" class="chk-pro chk-real save-input">
+                                <label for="check-micro-expression" class="flex-1 cursor-pointer select-none">
+                                    <span class="block text-[10px] font-bold text-purple-400">GIỮ BIỂU CẢM VI MÔ (MICRO EXPRESSION)</span>
+                                    <span class="block text-[9px] text-purple-400/70">Không làm phẳng các nếp nhăn cảm xúc</span>
                                 </label>
                             </div>
                         </div>
@@ -547,6 +618,7 @@
                                  <optgroup label="🎨 Colorization (Tô màu AI)">
                                     <option value="colorize_bw_old_photo">🌈 Tô màu ảnh đen trắng (Old Photo Colorize)</option>
                                     <option value="restore_faded_color">🍂 Phục hồi màu phai (Faded Repair)</option>
+                                    <option value="vibrant_modern">✨ Màu Tươi Sáng (Vibrant Pro)</option>
                                  </optgroup>
                                  <optgroup label="✨ TAO ANH SANG Presets (JSON Integrated)">
                                      <option value="golden_hour_blinds">🌅 Golden Hour + Blinds (Nắng xuyên rèm)</option>
@@ -596,7 +668,6 @@
                                     <label for="check-soft-light" class="text-[11px] text-gray-400">Prompt: Soft Light (Ánh sáng mềm)</label>
                                 </div>
                             </div>
-                            <!-- ADDED FROM INDEX1: EXPOSURE STRENGTH SLIDER -->
                             <div class="border border-white/10 rounded bg-black/20 p-2">
                                 <div class="flex justify-between text-[11px] text-[#64D2FF] font-bold mb-1">
                                     <span>CƯỜNG ĐỘ XỬ LÝ (STRENGTH)</span>
@@ -665,7 +736,6 @@
                                     <option value="invsr_sharp" class="text-green-400 font-bold">🔪 InvSR Deblur (Chống Rung/Mờ - CHAY NET OK)</option>
                                     <option value="pixel_perfect" class="text-yellow-400">💎 Pixel Perfect (Giữ nguyên hạt da)</option>
                                     <option value="ultrasharp">⚡ 4x-UltraSharp (Tốc độ nhanh)</option>
-                                    <!-- ADDED FROM INDEX1: REALESRGAN -->
                                     <option value="realesrgan">💍 RealESRGAN (Ảnh cưới/Mịn da)</option>
                                     <option value="none">🚫 Không Upscale (Nhanh nhất)</option>
                                 </select>
@@ -707,7 +777,7 @@
 
                              <!-- V35.25 ADVANCED BLOCK (ADDED) -->
                              <div class="mt-2 pt-2 border-t border-white/5 space-y-2">
-                                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1 block">🚀 V36.0 ADVANCED (ĐỘC QUYỀN)</label>
+                                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1 block">🚀 V37.0 EXPERT (MỚI)</label>
                                 
                                 <div class="flex items-center gap-2 p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
                                     <input id="check-group-mode" type="checkbox" class="chk-pro save-input">
@@ -737,6 +807,47 @@
                     </div>
                 </div>
 
+                <!-- ADDED MODULE: EXPERT TOOLS (MỚI) -->
+                <div class="module-group" id="module-expert">
+                    <button id="toggle-expert" class="module-header w-full">
+                         <div class="flex items-center gap-2">
+                            <span class="text-[12px] font-bold text-[#FFD60A] tracking-wide uppercase">⚡ CÔNG CỤ NÂNG CAO (EXPERT)</span>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-500 transition-transform" id="icon-expert" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-expert" class="module-content">
+                        <div class="module-inner space-y-3">
+                             <div class="border border-white/10 rounded bg-black/20 p-2">
+                                <div class="flex justify-between text-[11px] text-[#FFD60A] font-bold mb-1">
+                                    <span>MỨC ĐỘ KHỬ NHIỄU (DENOISE)</span>
+                                    <span id="denoise-val" class="text-gray-200">0.5</span>
+                                </div>
+                                <input type="range" id="denoise-slider" min="0.1" max="1.0" step="0.1" value="0.5" class="w-full slider-cyan">
+                                <div class="text-[9px] text-gray-500 mt-1 italic">Thấp (0.3): Giữ chi tiết gốc | Cao (0.7): Mịn & Sáng tạo hơn</div>
+                             </div>
+                             
+                             <div class="flex items-center justify-between p-2 rounded bg-[#0A84FF]/10 border border-[#0A84FF]/20">
+                                <div class="flex flex-col">
+                                    <span class="text-[12px] font-bold text-[#0A84FF]">ULTRA-SHARP 8K MODE</span>
+                                    <span class="text-[9px] text-[#0A84FF]/70">Tăng độ nét cực đại (High Pass Filter)</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="check-ultra-sharp" class="sr-only peer save-input">
+                                    <div class="w-8 h-4 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#0A84FF]"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 p-2 rounded border border-gray-600 bg-gray-800/30">
+                                <input id="check-deep-scratch" type="checkbox" class="chk-pro chk-red save-input">
+                                <label for="check-deep-scratch" class="flex-1 cursor-pointer select-none">
+                                    <span class="block text-[10px] font-bold text-gray-300">XÓA VẾT XƯỚC SÂU (DEEP SCRATCH)</span>
+                                    <span class="block text-[9px] text-gray-500">Dùng cho ảnh bị cào xước nặng, mất mảng</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- MODULE 2: ĐỐI TƯỢNG -->
                 <div class="module-group" id="module-subject">
                     <button id="toggle-subject" class="module-header w-full">
@@ -757,7 +868,6 @@
                                 <option value="true skin, natural pores, film grain, realistic skin:1.2, natural beauty:1.2" selected>🧬 TRUE SKIN (DA THẬT - LỖ CHÂN LÔNG)</option>
                                 <option value="Canon EOS 5D Mark IV, 85mm lens, shallow depth of field, perfect lighting, raw photo, realistic skin texture">📸 Canon 5D + 85mm Lens (Studio Skin)</option>
                                 <option value="smooth skin, ai beauty">Mịn màng (AI Beauty)</option>
-                                <!-- ADDED FROM INDEX1: FILM GRAIN -->
                                 <option value="high detail, film grain">Chi tiết cao (Film Grain)</option>
                             </select>
                             <div class="space-y-3">
@@ -788,7 +898,6 @@
                                         <option value="blue_bg">🟦 Nền Xanh (Blue)</option>
                                         <option value="white_bg">⬜ Nền Trắng (White)</option>
                                     </optgroup>
-                                    <!-- ADDED FROM INDEX1: FLUX STYLE -->
                                     <optgroup label="Flux Style (Theo JSON)">
                                         <option value="outdoor_garden">🌿 Sân Vườn / Hoa Lá (Chuẩn JSON)</option>
                                         <option value="luxury_interior">🕰️ Nội Thất Sang Trọng</option>
@@ -913,6 +1022,23 @@
                     </div>
                 </div>
 
+                <!-- ADDED MODULE: LỊCH SỬ (MỚI) -->
+                <div class="module-group" id="module-history">
+                    <button id="toggle-history" class="module-header w-full">
+                         <div class="flex items-center gap-2">
+                            <span class="text-[12px] font-bold text-gray-400 uppercase">🕒 LỊCH SỬ GẦN ĐÂY</span>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-500 transition-transform" id="icon-history" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="content-history" class="module-content open">
+                        <div class="module-inner">
+                            <div id="history-container" class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar min-h-[50px]">
+                                <div class="text-[10px] text-gray-600 w-full text-center py-2">Chưa có ảnh nào...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Footer Actions -->
@@ -933,7 +1059,7 @@
                 <div class="flex flex-col items-center">
                      <span class="font-bold text-white text-[14px] tracking-tight">PHỤC HỒI ẢNH</span>
                      <div class="flex items-center gap-2 opacity-60">
-                        <span class="text-[9px] font-mono">V36.60 PRO</span>
+                        <span class="text-[9px] font-mono">V40.00 PRO</span>
                         <span class="text-[9px]">•</span>
                         <span id="mobile-status-text" class="text-[9px] font-mono tracking-widest">WAITING</span>
                      </div>
@@ -1143,7 +1269,7 @@
 
                 <!-- Input Field (iOS Style) -->
                 <div class="relative">
-                    <input type="text" id="recharge-input" class="w-full bg-[#2c2c2e] text-white text-center font-mono text-sm py-3 pl-4 pr-12 rounded-xl border border-white/10 focus:border-[#0A84FF] focus:bg-[#3a3a3c] transition-all outline-none placeholder-gray-500 uppercase tracking-widest" placeholder="NHẬP MÃ V36...">
+                    <input type="text" id="recharge-input" class="w-full bg-[#2c2c2e] text-white text-center font-mono text-sm py-3 pl-4 pr-12 rounded-xl border border-white/10 focus:border-[#0A84FF] focus:bg-[#3a3a3c] transition-all outline-none placeholder-gray-500 uppercase tracking-widest" placeholder="NHẬP MÃ V37...">
                     <button id="btn-submit-recharge" class="absolute right-1 top-1 bottom-1 aspect-square bg-[#30D158] hover:bg-[#28c04d] text-white rounded-lg flex items-center justify-center transition-transform active:scale-95 shadow-lg">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     </button>
@@ -1174,6 +1300,7 @@
                 deviceId: null,
                 credits: 0,
                 ipAddress: null, 
+                history: [], // Added History Array
                 
                 async init() {
                     try {
@@ -1190,6 +1317,7 @@
                     
                     await this.fetchIP();
                     this.loadCredits();
+                    this.loadHistory(); // Added
 
                     try {
                         const currentHost = window.location.hostname;
@@ -1297,6 +1425,43 @@
                         this.credits = parseInt(savedCredits);
                     }
                 },
+                
+                loadHistory() {
+                    // Added: Load recent history
+                    const h = localStorage.getItem('v37_history');
+                    if(h) this.history = JSON.parse(h);
+                    this.renderHistory();
+                },
+                
+                addHistory(imgData) {
+                    // Add new image to history (max 10)
+                    this.history.unshift(imgData);
+                    if(this.history.length > 10) this.history.pop();
+                    localStorage.setItem('v37_history', JSON.stringify(this.history));
+                    this.renderHistory();
+                },
+                
+                renderHistory() {
+                    const container = document.getElementById('history-container');
+                    if(!container) return;
+                    if(this.history.length === 0) {
+                        container.innerHTML = '<div class="text-[10px] text-gray-600 w-full text-center py-2">Chưa có ảnh nào...</div>';
+                        return;
+                    }
+                    container.innerHTML = '';
+                    this.history.forEach(src => {
+                        const d = document.createElement('div');
+                        d.className = 'history-item flex-shrink-0';
+                        d.style.backgroundImage = `url(${src})`;
+                        d.onclick = () => {
+                            // Restore from history
+                             const imgModified = document.getElementById('img-modified');
+                             imgModified.src = src;
+                             showToast("Đã tải lại từ lịch sử", "success");
+                        };
+                        container.appendChild(d);
+                    });
+                },
 
                 setCredits(amount) {
                     this.credits = amount;
@@ -1366,8 +1531,8 @@
 
                 const updateQR = (amount) => {
                     // CẬP NHẬT: Kèm ID khách hàng vào nội dung chuyển khoản
-                    // Định dạng: V36 [DEVICE-ID] (Updated V36)
-                    const content = `V36 ${deviceId}`; 
+                    // Định dạng: V37 [DEVICE-ID] (Updated V37)
+                    const content = `V37 ${deviceId}`; 
                     const url = `https://img.vietqr.io/image/${bankId}-${accNo}-${template}.png?amount=${amount}&addInfo=${encodeURIComponent(content)}&accountName=${encodeURIComponent(accName)}`;
                     qrImage.src = url;
                     if(contentDisplay) contentDisplay.textContent = content;
@@ -1535,7 +1700,7 @@
                         
                     }, delay);
                     
-                    delay += 1800; // Wait for animation to almost finish before next
+                    delay += 300; // Wait for animation to almost finish before next
                 });
                 
                 // Clear after all done
@@ -1574,6 +1739,15 @@
                 
                 // Check Logo
                 if(document.getElementById('check-logo')?.checked) settings.push("WATERMARK: ON");
+                
+                // Expert Mode
+                if(document.getElementById('check-ultra-sharp')?.checked) settings.push("ULTRA-SHARP: ON");
+                if(document.getElementById('check-deep-scratch')?.checked) settings.push("DEEP SCRATCH FIX: ON");
+                
+                // Material Mode (V38 Added)
+                if(document.getElementById('check-silk-texture')?.checked) settings.push("SILK TEXTURE: ON");
+                if(document.getElementById('check-kaki-texture')?.checked) settings.push("KAKI FABRIC: ON");
+                if(document.getElementById('check-micro-skin')?.checked) settings.push("MICRO SKIN: ON");
 
                 return settings;
             }
@@ -1610,7 +1784,7 @@
             };
 
             const toggleModule = (btnId, contentId, iconId) => { const btn = document.getElementById(btnId), content = document.getElementById(contentId), icon = document.getElementById(iconId); if(btn) btn.addEventListener('click', () => { if(content) content.classList.toggle('open'); if(icon && content) icon.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)'; }); };
-            ['processing','subject','identity','prompt','logo','military','cinematic','exposure'].forEach(id => toggleModule(`toggle-${id}`, `content-${id}`, `icon-${id}`));
+            ['processing','subject','identity','prompt','logo','military','cinematic','exposure', 'expert', 'history', 'material'].forEach(id => toggleModule(`toggle-${id}`, `content-${id}`, `icon-${id}`));
 
             const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
             if(toggleSidebarBtn) toggleSidebarBtn.onclick = openSidebar;
@@ -1621,7 +1795,7 @@
             const downloadImage = () => {
                 if (!state.restoredObj) return showToast("Chưa có ảnh kết quả!", "error");
                 const link = document.createElement('a');
-                link.download = `V36-Restored-${Date.now()}.jpg`;
+                link.download = `V40-Restored-${Date.now()}.jpg`;
                 link.href = document.getElementById('img-modified').src;
                 document.body.appendChild(link);
                 link.click();
@@ -1735,6 +1909,8 @@
                          finalPrompt += ", (Moonlight through window panes:1.3), (bluish soft grid shadows:1.2), (mysterious night mood)";
                     } else if (colorGrade && colorGrade.value.includes('colorize_bw_old_photo')) {
                          finalPrompt += ", (colorize:1.5), (vibrant colors), (natural skin tones:1.4), (realistic clothes colors)";
+                    } else if (colorGrade && colorGrade.value.includes('vibrant_modern')) {
+                         finalPrompt += ", (vibrant color palette:1.3), (modern cinematic lighting:1.2), (high saturation:1.1)";
                     }
 
                     // ADDED LOGIC FOR MILITARY EXTRAS FROM INDEX1
@@ -1782,6 +1958,37 @@
                             finalPrompt += `, (remove harsh light and shadow:${(1.5 * exposureStrength).toFixed(1)}), (neutralize exposure:${(1.4 * exposureStrength).toFixed(1)})`;
                         }
                     }
+                    
+                    // *** V37 EXPERT UPGRADES ***
+                    const denoiseVal = parseFloat(document.getElementById('denoise-slider')?.value || 0.5);
+                    const isUltraSharp = document.getElementById('check-ultra-sharp')?.checked || false;
+                    const isDeepScratch = document.getElementById('check-deep-scratch')?.checked || false;
+                    
+                    finalPrompt += `, (denoise:${denoiseVal})`;
+                    
+                    if(isUltraSharp) {
+                        finalPrompt += ", (8k resolution:1.6), (unsharp mask:0.5), (high pass filter:0.3), (extremely detailed texture:1.5)";
+                    }
+                    
+                    if(isDeepScratch) {
+                        finalPrompt += ", (inpainting huge cracks:1.6), (fill white scratches:1.5), (reconstruct missing parts), (heal damage)";
+                    }
+                    
+                    // *** V38 MATERIAL UPGRADES ***
+                    const isSilk = document.getElementById('check-silk-texture')?.checked;
+                    const isKaki = document.getElementById('check-kaki-texture')?.checked;
+                    const isMicroSkin = document.getElementById('check-micro-skin')?.checked;
+                    
+                    if(isSilk) finalPrompt += ", (realistic silk texture:1.4), (shiny fabric:1.3), (detailed embroidery), (soft drape)";
+                    if(isKaki) finalPrompt += ", (rough canvas texture:1.4), (matte fabric), (detailed weave pattern:1.3), (stiff material)";
+                    if(isMicroSkin) finalPrompt += ", (hyper realistic skin pores:1.5), (visible skin texture), (natural blemishes), (no plastic skin)";
+
+                    // *** V39 SOUL AI UPGRADES ***
+                    const isEyeGlint = document.getElementById('check-eye-glint')?.checked;
+                    const isMicroExp = document.getElementById('check-micro-expression')?.checked;
+                    
+                    if(isEyeGlint) finalPrompt += ", (sparkling eye catchlights:1.4), (lively eyes), (detailed iris reflection), (remove dead eyes look)";
+                    if(isMicroExp) finalPrompt += ", (preserve micro expressions:1.3), (natural smile lines), (authentic facial emotion), (avoid frozen face)";
 
                     finalPrompt += ", (best quality, 8k, hyper detailed)";
 
@@ -1832,6 +2039,9 @@
                             document.getElementById('slider-handle').style.display = 'flex'; 
                             document.querySelector('.comp-label.after').style.display = 'block';
                             
+                            // Add to history
+                            UserSystem.addHistory(finalImgSrc);
+                            
                             updateMobileBtnState('done');
                             showToast("Phục chế thành công!", "success");
                         };
@@ -1875,7 +2085,8 @@
                     const resizedBase64 = await resizeImage(state.base64);
                     const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 40000);
                     
-                    const promptText = "Analyze this image for photo restoration. Return ONLY JSON: { \"sceneContext\": \"wedding\"|\"funeral\"|\"casual\"|\"studio\"|\"outdoor\"|\"product\"|\"painting\"|\"ancient_portrait\"|\"nature\", \"materialType\": \"paper_photo\"|\"canvas\"|\"newspaper\"|\"silk\"|\"digital\", \"specificDamage\": \"scratches\"|\"mold_spots\"|\"water_stain\"|\"tear\"|\"severe_decay\"|\"none\", \"colorCast\": \"sepia\"|\"cyan\"|\"red\"|\"yellow\"|\"none\", \"estimatedEra\": \"french_colonial\"|\"vietnam_war\"|\"subsidy_period\"|\"modern\"|\"unknown\", \"faceSize\": \"portrait_closeup\"|\"medium_shot\"|\"group_small_faces\", \"lightingCondition\": \"rembrandt\"|\"golden_hour\"|\"neon\"|\"soft_diffused\"|\"flat\"|\"overexposed\"|\"harsh_sun\"|\"moonlight\"|\"streetlight\", \"backgroundType\": \"plain\"|\"complex_outdoor\"|\"complex_indoor\", \"hairCondition\": \"blurry_mess\"|\"sharp\"|\"normal\", \"skinTexture\": \"waxy\"|\"detailed\"|\"grainy\", \"fabricDetail\": \"lost\"|\"visible\", \"hasJewelry\": boolean, \"isNature\": boolean, \"isMilitary\": boolean, \"militaryUniformType\": \"army_ground\"|\"air_force\"|\"navy\"|\"border_guard\"|\"public_security\"|\"youth_volunteer\"|\"unknown\", \"militaryHatType\": \"pith_helmet\"|\"soft_cap\"|\"kepi_officer\"|\"kepi_police\"|\"bamboo_helmet\"|\"none\", \"hasGoldStarMedal\": boolean, \"hasResistanceMedal\": boolean, \"hasYouthBadge\": boolean, \"isBlackAndWhite\": boolean, \"isAltarPortrait\": boolean, \"gender\": \"male\"|\"female\", \"age\": number, \"damageType\": \"scratches\"|\"faded\"|\"sepia\"|\"severe_damage\"|\"none\"|\"blur\", \"isOldPhoto\": boolean, \"isIDPhoto\": boolean, \"isHazy\": boolean, \"hasStrabismus\": boolean, \"hasDroopyEyelids\": boolean, \"hasClosedEyes\": boolean, \"hasMonolids\": boolean, \"hasBuckTeeth\": boolean, \"hasBlackenedTeeth\": boolean, \"isGroupPhoto\": boolean }";
+                    // UPDATED PROMPT FOR V40.00 ULTRA VISION (FULL MAPPING)
+                    const promptText = "Analyze this image for photo restoration. Return ONLY JSON: { \"sceneContext\": \"wedding\"|\"funeral\"|\"casual\"|\"studio\"|\"outdoor\"|\"product\"|\"painting\"|\"ancient_portrait\"|\"nature\", \"materialType\": \"paper_photo\"|\"canvas\"|\"newspaper\"|\"silk\"|\"digital\", \"specificDamage\": \"scratches\"|\"mold_spots\"|\"water_stain\"|\"tear\"|\"severe_decay\"|\"none\", \"colorCast\": \"sepia\"|\"cyan\"|\"red\"|\"yellow\"|\"none\", \"estimatedEra\": \"french_colonial\"|\"vietnam_war\"|\"subsidy_period\"|\"modern\"|\"unknown\", \"faceSize\": \"portrait_closeup\"|\"medium_shot\"|\"group_small_faces\", \"lightingCondition\": \"rembrandt\"|\"golden_hour\"|\"neon\"|\"soft_diffused\"|\"flat\"|\"overexposed\"|\"harsh_sun\"|\"moonlight\"|\"streetlight\", \"backgroundType\": \"plain\"|\"complex_outdoor\"|\"complex_indoor\", \"hairCondition\": \"blurry_mess\"|\"sharp\"|\"normal\", \"skinTexture\": \"waxy\"|\"detailed\"|\"grainy\", \"fabricDetail\": \"lost\"|\"visible\", \"hasJewelry\": boolean, \"isNature\": boolean, \"isMilitary\": boolean, \"militaryUniformType\": \"army_ground\"|\"air_force\"|\"navy\"|\"border_guard\"|\"public_security\"|\"youth_volunteer\"|\"unknown\", \"militaryHatType\": \"pith_helmet\"|\"soft_cap\"|\"kepi_officer\"|\"kepi_police\"|\"bamboo_helmet\"|\"none\", \"hasGoldStarMedal\": boolean, \"hasResistanceMedal\": boolean, \"hasYouthBadge\": boolean, \"isBlackAndWhite\": boolean, \"isAltarPortrait\": boolean, \"gender\": \"male\"|\"female\", \"age\": number, \"damageType\": \"scratches\"|\"faded\"|\"sepia\"|\"severe_damage\"|\"none\"|\"blur\", \"isOldPhoto\": boolean, \"isIDPhoto\": boolean, \"isHazy\": boolean, \"hasStrabismus\": boolean, \"hasDroopyEyelids\": boolean, \"hasClosedEyes\": boolean, \"hasMonolids\": boolean, \"hasBuckTeeth\": boolean, \"hasBlackenedTeeth\": boolean, \"isGroupPhoto\": boolean, \"hasDeepScratches\": boolean, \"noiseLevel\": \"low\"|\"medium\"|\"high\", \"isBlurry\": boolean, \"fabricType\": \"silk\"|\"cotton\"|\"kaki\"|\"wool\"|\"none\", \"needsMicroTexture\": boolean, \"isLowContrast\": boolean, \"isDullColor\": boolean, \"isUnevenSkin\": boolean, \"isVeryBlurry\": boolean, \"isSevereDamage\": boolean, \"hasRankInsignia\": boolean, \"rankDescription\": \"string\", \"isPaintingOrStatue\": boolean, \"hasDeadEyes\": boolean, \"hasStrongExpression\": boolean, \"recommendedGrain\": 0-100, \"recommendedExposure\": 0.1-2.0, \"isHarshLight\": boolean, \"recommendedTextureMode\": \"true_skin\"|\"studio_skin\"|\"smooth\"|\"high_detail\" }";
                     
                     const headers = { 'Content-Type': 'application/json' }; if (isComet) headers['Authorization'] = `Bearer ${keyToUse}`;
                     const response = await fetch(`${apiBase}/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${keyToUse}`, { method: 'POST', headers: headers, signal: controller.signal, body: JSON.stringify({ contents: [{ parts: [{ text: promptText }, { inlineData: { mimeType: "image/jpeg", data: resizedBase64.split(',')[1] } }] }] }) });
@@ -1894,7 +2105,9 @@
                         const autoReport = [];
 
                         const setChecked = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
+                        const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
 
+                        // --- BASIC MAPPING ---
                         if(document.getElementById('gender-select')) {
                             const genderVal = result.gender === 'male' ? 'male' : (result.gender === 'female' ? 'female' : '');
                             document.getElementById('gender-select').value = genderVal;
@@ -1918,6 +2131,7 @@
                             autoReport.push("PHÁT HIỆN: ẢNH THỜ");
                         }
                         
+                        // --- MILITARY ---
                         if(result.isMilitary) { 
                             const contentMilitary = document.getElementById('content-military');
                             if(contentMilitary) contentMilitary.classList.add('open'); 
@@ -1959,6 +2173,12 @@
                             if(result.hasGoldStarMedal) { setChecked('check-sao-vang', true); autoReport.push("AUTO: SAO VÀNG"); }
                             if(result.hasResistanceMedal) { setChecked('check-khang-chien', true); autoReport.push("AUTO: HC KHÁNG CHIẾN"); }
                             if(result.hasYouthBadge) { setChecked('check-doan', true); autoReport.push("AUTO: HUY HIỆU ĐOÀN"); }
+                            
+                            // V40.0 NEW: Check rank insignia
+                            if (!result.hasRankInsignia) {
+                                setChecked('block-rank', true);
+                                autoReport.push("AUTO: CHẶN VẼ QUÂN HÀM");
+                            }
                         }
 
                         if(result.isGroupPhoto) {
@@ -2041,6 +2261,112 @@
                             smartPrompt += ", (detailed jewelry:1.4), (sparkling gold/silver:1.2)";
                             autoReport.push("AUTO: LÀM NÉT TRANG SỨC");
                         }
+                        
+                        // *** V37 EXPERT AUTO LOGIC (MỚI THÊM) ***
+                        if (result.hasDeepScratches || result.specificDamage === 'severe_decay' || result.damageType === 'severe_damage') {
+                            setChecked('check-deep-scratch', true);
+                            autoReport.push("AUTO: XÓA XƯỚC SÂU (DEEP)");
+                            const expertMod = document.getElementById('content-expert');
+                            if(expertMod) expertMod.classList.add('open');
+                        }
+
+                        if (result.isBlurry || result.damageType === 'blur' || result.faceSize === 'group_small_faces') {
+                            setChecked('check-ultra-sharp', true);
+                            autoReport.push("AUTO: ULTRA-SHARP 8K");
+                            const expertMod = document.getElementById('content-expert');
+                            if(expertMod) expertMod.classList.add('open');
+                        }
+
+                        // Auto Adjust Denoise Slider based on noise level
+                        const denoiseSlider = document.getElementById('denoise-slider');
+                        const denoiseValDisplay = document.getElementById('denoise-val');
+                        if (denoiseSlider && result.noiseLevel) {
+                            let val = 0.5;
+                            if(result.noiseLevel === 'high') val = 0.8;
+                            else if(result.noiseLevel === 'low') val = 0.3;
+                            
+                            denoiseSlider.value = val;
+                            if(denoiseValDisplay) denoiseValDisplay.textContent = val;
+                            autoReport.push(`AUTO: DENOISE ${val}`);
+                        }
+                        
+                        // *** V38 MATERIAL AUTO LOGIC (MỚI) ***
+                        if(result.fabricType === 'silk' || result.sceneContext === 'wedding' || (result.sceneContext === 'ancient_portrait' && result.gender === 'female')) {
+                            setChecked('check-silk-texture', true);
+                            autoReport.push("AUTO: CHẤT LIỆU LỤA");
+                            const matMod = document.getElementById('content-material');
+                            if(matMod) matMod.classList.add('open');
+                        } else if (result.fabricType === 'kaki' || result.isMilitary) {
+                            setChecked('check-kaki-texture', true);
+                            autoReport.push("AUTO: CHẤT LIỆU KAKI");
+                            const matMod = document.getElementById('content-material');
+                            if(matMod) matMod.classList.add('open');
+                        }
+                        
+                        if(result.needsMicroTexture || result.faceSize === 'portrait_closeup') {
+                            setChecked('check-micro-skin', true);
+                            autoReport.push("AUTO: MICRO SKIN");
+                        }
+                        
+                        // *** V40.0 ULTRA VISION MAPPING (NEW - FULL COVERAGE) ***
+                        if (result.isLowContrast) { setChecked('check-contrast-fix', true); autoReport.push("AUTO: FIX TƯƠNG PHẢN"); }
+                        if (result.isDullColor) { setChecked('check-vibrant', true); autoReport.push("AUTO: LZP COLOR"); }
+                        if (result.isUnevenSkin) { setChecked('check-uniform-skin', true); autoReport.push("AUTO: ĐỀU MÀU DA"); }
+                        if (result.isVeryBlurry) { setChecked('check-blur-prepass', true); autoReport.push("AUTO: KHỬ NHIỄU SÂU"); }
+                        if (result.isSevereDamage) { setChecked('check-extreme-mode', true); autoReport.push("AUTO: EXTREME RESTORE"); }
+                        if (result.isPaintingOrStatue) { setChecked('check-dual-controlnet', true); autoReport.push("AUTO: DUAL CONTROLNET"); }
+                        if (result.hasDeadEyes) { setChecked('check-eye-glint', true); autoReport.push("AUTO: TẠO ÁNH MẮT"); }
+                        if (result.hasStrongExpression) { setChecked('check-micro-expression', true); autoReport.push("AUTO: GIỮ BIỂU CẢM"); }
+                        
+                        // New Sliders & Selects Automation
+                        if (result.recommendedGrain !== undefined) {
+                            setVal('grain-slider', result.recommendedGrain);
+                            const gVal = document.getElementById('grain-val');
+                            if(gVal) gVal.textContent = result.recommendedGrain + '%';
+                        }
+
+                        if (result.recommendedExposure !== undefined) {
+                            setVal('exposure-slider', result.recommendedExposure);
+                            const eVal = document.getElementById('exposure-val');
+                            if(eVal) eVal.textContent = result.recommendedExposure;
+                        }
+
+                        if (result.isHarshLight) {
+                            setChecked('check-soft-light', true);
+                            autoReport.push("AUTO: SOFT LIGHT");
+                        }
+
+                        if (result.recommendedTextureMode) {
+                            let tVal = "";
+                            if(result.recommendedTextureMode === 'true_skin') tVal = "true skin, natural pores, film grain, realistic skin:1.2, natural beauty:1.2";
+                            else if(result.recommendedTextureMode === 'studio_skin') tVal = "Canon EOS 5D Mark IV, 85mm lens, shallow depth of field, perfect lighting, raw photo, realistic skin texture";
+                            else if(result.recommendedTextureMode === 'smooth') tVal = "smooth skin, ai beauty";
+                            else if(result.recommendedTextureMode === 'high_detail') tVal = "high detail, film grain";
+                            
+                            if(tVal) setVal('texture-mode', tVal);
+                        }
+                        
+                        if(result.sceneContext === 'outdoor' || result.sceneContext === 'nature') {
+                             setVal('event-context', 'outdoor_garden');
+                        } else if (result.sceneContext === 'studio' && result.isOldPhoto) {
+                             setVal('event-context', 'luxury_interior');
+                        }
+
+
+                        // *** MISSING AUTO CHECKS (BỔ SUNG) ***
+                        if (result.lightingCondition === 'harsh_sun' || result.lightingCondition === 'overexposed') {
+                            setChecked('check-qwen-exposure', true);
+                            setChecked('check-remove-shadow', true);
+                            autoReport.push("AUTO: XỬ LÝ CHÁY SÁNG");
+                            const exposureMod = document.getElementById('content-exposure');
+                            if(exposureMod) exposureMod.classList.add('open');
+                        }
+                        
+                        if (result.isHazy || result.backgroundType === 'complex_outdoor') {
+                            setChecked('check-dehaze', true);
+                            autoReport.push("AUTO: KHỬ SƯƠNG MÙ");
+                        }
+                        // ****************************************
                         
                         const promptMain = document.getElementById('prompt-main');
                         if(promptMain) promptMain.value = smartPrompt;
@@ -2154,7 +2480,7 @@
                 const usedCodes = JSON.parse(localStorage.getItem('v35_used_codes') || '[]');
                 if (usedCodes.includes(code)) return showToast("Mã này đã được sử dụng!", "error");
 
-                if (!code.startsWith('V36-')) return showToast("Mã không đúng định dạng V36-...", "error");
+                if (!code.startsWith('V40-')) return showToast("Mã không đúng định dạng V40-...", "error");
 
                 const token = code.substring(4);
                 const decrypted = Sec.dec(token);
