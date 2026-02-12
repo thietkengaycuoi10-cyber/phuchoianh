@@ -2039,7 +2039,7 @@
                     const resizedBase64 = await resizeImage(state.base64);
                     const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 40000);
                     
-                    const promptText = "Analyze this image for photo restoration. Return ONLY JSON: { \"sceneContext\": \"wedding\"|\"funeral\"|\"casual\"|\"studio\"|\"outdoor\"|\"product\"|\"painting\"|\"ancient_portrait\"|\"nature\", \"materialType\": \"paper_photo\"|\"canvas\"|\"newspaper\"|\"silk\"|\"digital\", \"specificDamage\": \"scratches\"|\"mold_spots\"|\"water_stain\"|\"tear\"|\"severe_decay\"|\"none\", \"colorCast\": \"sepia\"|\"cyan\"|\"red\"|\"yellow\"|\"none\", \"estimatedEra\": \"french_colonial\"|\"vietnam_war\"|\"subsidy_period\"|\"modern\"|\"unknown\", \"faceSize\": \"portrait_closeup\"|\"medium_shot\"|\"group_small_faces\", \"lightingCondition\": \"rembrandt\"|\"golden_hour\"|\"neon\"|\"soft_diffused\"|\"flat\"|\"overexposed\"|\"harsh_sun\"|\"moonlight\"|\"streetlight\", \"backgroundType\": \"plain\"|\"complex_outdoor\"|\"complex_indoor\", \"hairCondition\": \"blurry_mess\"|\"sharp\"|\"normal\", \"skinTexture\": \"waxy\"|\"detailed\"|\"grainy\", \"fabricDetail\": \"lost\"|\"visible\", \"hasJewelry\": boolean, \"isNature\": boolean, \"isMilitary\": boolean, \"militaryUniformType\": \"army_ground\"|\"air_force\"|\"navy\"|\"border_guard\"|\"public_security\"|\"youth_volunteer\"|\"unknown\", \"militaryHatType\": \"pith_helmet\"|\"soft_cap\"|\"kepi_officer\"|\"kepi_police\"|\"bamboo_helmet\"|\"none\", \"hasGoldStarMedal\": boolean, \"hasResistanceMedal\": boolean, \"hasYouthBadge\": boolean, \"isBlackAndWhite\": boolean, \"isAltarPortrait\": boolean, \"gender\": \"male\"|\"female\", \"age\": number, \"damageType\": \"scratches\"|\"faded\"|\"sepia\"|\"severe_damage\"|\"none\"|\"blur\", \"isOldPhoto\": boolean, \"isIDPhoto\": boolean, \"isHazy\": boolean, \"hasStrabismus\": boolean, \"hasDroopyEyelids\": boolean, \"hasClosedEyes\": boolean, \"hasMonolids\": boolean, \"hasBuckTeeth\": boolean, \"hasBlackenedTeeth\": boolean, \"isGroupPhoto\": boolean }";
+                    const promptText = "Analyze this image for photo restoration. Return ONLY JSON: { \"sceneContext\": \"wedding\"|\"funeral\"|\"casual\"|\"studio\"|\"outdoor\"|\"product\"|\"painting\"|\"ancient_portrait\"|\"nature\", \"materialType\": \"paper_photo\"|\"canvas\"|\"newspaper\"|\"silk\"|\"digital\", \"specificDamage\": \"scratches\"|\"mold_spots\"|\"water_stain\"|\"tear\"|\"severe_decay\"|\"none\", \"colorCast\": \"sepia\"|\"cyan\"|\"red\"|\"yellow\"|\"none\", \"estimatedEra\": \"french_colonial\"|\"vietnam_war\"|\"subsidy_period\"|\"modern\"|\"unknown\", \"faceSize\": \"portrait_closeup\"|\"medium_shot\"|\"group_small_faces\", \"lightingCondition\": \"rembrandt\"|\"golden_hour\"|\"neon\"|\"soft_diffused\"|\"flat\"|\"overexposed\"|\"harsh_sun\"|\"moonlight\"|\"streetlight\", \"backgroundType\": \"plain\"|\"complex_outdoor\"|\"complex_indoor\", \"hairCondition\": \"blurry_mess\"|\"sharp\"|\"normal\", \"skinTexture\": \"waxy\"|\"detailed\"|\"grainy\", \"fabricDetail\": \"lost\"|\"visible\", \"hasJewelry\": boolean, \"isNature\": boolean, \"isMilitary\": boolean, \"militaryUniformType\": \"army_ground\"|\"air_force\"|\"navy\"|\"border_guard\"|\"public_security\"|\"youth_volunteer\"|\"unknown\", \"militaryHatType\": \"pith_helmet\"|\"soft_cap\"|\"kepi_officer\"|\"kepi_police\"|\"bamboo_helmet\"|\"none\", \"hasGoldStarMedal\": boolean, \"hasResistanceMedal\": boolean, \"hasYouthBadge\": boolean, \"isBlackAndWhite\": boolean, \"isAltarPortrait\": boolean, \"gender\": \"male\"|\"female\"|\"mixed\", \"age\": number, \"damageType\": \"scratches\"|\"faded\"|\"sepia\"|\"severe_damage\"|\"none\"|\"blur\", \"isOldPhoto\": boolean, \"isIDPhoto\": boolean, \"isHazy\": boolean, \"hasStrabismus\": boolean, \"hasDroopyEyelids\": boolean, \"hasClosedEyes\": boolean, \"hasMonolids\": boolean, \"hasBuckTeeth\": boolean, \"hasBlackenedTeeth\": boolean, \"isGroupPhoto\": boolean, \"groupDemographics\": \"mixed_ages_genders\"|\"mostly_elders\"|\"mostly_children\"|\"mostly_young_adults\"|\"single_person\"|\"unknown\" }";
                     
                     const headers = { 'Content-Type': 'application/json' }; if (isComet) headers['Authorization'] = `Bearer ${keyToUse}`;
                     const response = await fetch(`${apiBase}/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${keyToUse}`, { method: 'POST', headers: headers, signal: controller.signal, body: JSON.stringify({ contents: [{ parts: [{ text: promptText }, { inlineData: { mimeType: "image/jpeg", data: resizedBase64.split(',')[1] } }] }] }) });
@@ -2060,11 +2060,12 @@
                         const setChecked = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; };
 
                         if(document.getElementById('gender-select')) {
-                            const genderVal = result.gender === 'male' ? 'male' : (result.gender === 'female' ? 'female' : '');
+                            let genderVal = result.gender === 'male' ? 'male' : (result.gender === 'female' ? 'female' : '');
+                            if (result.gender === 'mixed' || result.isGroupPhoto) genderVal = 'male and female';
                             document.getElementById('gender-select').value = genderVal;
-                            if(genderVal) autoReport.push(`PHÁT HIỆN: GIỚI TÍNH ${genderVal === 'male' ? 'NAM' : 'NỮ'}`);
+                            if(genderVal) autoReport.push(`PHÁT HIỆN: GIỚI TÍNH ${genderVal === 'male' ? 'NAM' : (genderVal === 'female' ? 'NỮ' : 'HỖN HỢP')}`);
                         }
-                        if(document.getElementById('age-input')) {
+                        if(document.getElementById('age-input') && !result.isGroupPhoto) {
                             document.getElementById('age-input').value = result.age || 30;
                             autoReport.push(`PHÁT HIỆN: ĐỘ TUỔI ${result.age || 30}`);
                         }
@@ -2179,8 +2180,12 @@
 
                         if(result.faceSize === 'portrait_closeup') {
                             smartPrompt += ", (extremely detailed eyes:1.4), (individual eyelashes:1.3)";
-                        } else if (result.faceSize === 'group_small_faces') {
-                            smartPrompt += ", (clear facial features:1.5), (avoid distorted faces:1.4)";
+                        } else if (result.faceSize === 'group_small_faces' || result.isGroupPhoto) {
+                            smartPrompt += ", (clear facial features:1.5), (avoid distorted faces:1.4), (preserve distinct individual facial features:1.6), (avoid uniform AI faces:1.5)";
+                            if (result.groupDemographics === 'mixed_ages_genders') {
+                                smartPrompt += ", (diverse group of people:1.4), (maintain distinct age differences between children, adults, and elders:1.6), (accurate mixed gender representation:1.4), (multi-generational portrait:1.3)";
+                                autoReport.push("PROMPT: BẢO TOÀN ĐA DẠNG ĐỘ TUỔI/GIỚI TÍNH");
+                            }
                         }
 
                         if(result.estimatedEra === 'french_colonial' && !result.isMilitary) {
